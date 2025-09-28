@@ -2,11 +2,8 @@ rules:
   - id: llm02-insecure-output-handling
     message: "Insecure output handling: LLM response used directly in security-sensitive operations"
     languages: [python, javascript, typescript]
-    patterns:
-      - pattern: eval\(.*llm|openai|anthropic.*response|content.*\)
-      - pattern: exec\(.*llm|openai|anthropic.*response|content.*\)
-      - pattern: ".*response.*content.*sql|query.*"
-      - pattern: ".*llm.*output.*os\\.system|subprocess.*"
+    pattern: |
+      eval($LLM_RESPONSE.content)
     severity: CRITICAL
     metadata:
       cwe: "CWE-95"
@@ -14,13 +11,35 @@ rules:
       category: "insecure-output-handling"
       description: "Detects direct use of LLM responses in code execution or database operations"
 
+  - id: llm02-exec-insecure-output
+    message: "Insecure output handling: exec() with LLM response"
+    languages: [python]
+    pattern: |
+      exec($LLM_RESPONSE.content)
+    severity: CRITICAL
+    metadata:
+      cwe: "CWE-95"
+      owasp-llm: "LLM02"
+      category: "insecure-output-handling"
+      description: "Detects exec() calls with LLM response content"
+
+  - id: llm02-sql-injection
+    message: "Potential SQL injection: LLM response used in SQL queries"
+    languages: [python, javascript, typescript]
+    pattern: |
+      $QUERY = "... " + $LLM_RESPONSE.content + " ..."
+    severity: HIGH
+    metadata:
+      cwe: "CWE-89"
+      owasp-llm: "LLM02"
+      category: "insecure-output-handling"
+      description: "Detects LLM responses concatenated into SQL queries"
+
   - id: llm02-unvalidated-llm-output
     message: "Unvalidated LLM output: Response used without validation or sanitization"
     languages: [python, javascript, typescript]
-    patterns:
-      - pattern: ".*llm.*response.*content.*render|html|innerHTML.*"
-      - pattern: ".*openai.*content.*redirect|location.*"
-      - pattern: ".*anthropic.*output.*file.*write.*"
+    pattern: |
+      $HTML = $LLM_RESPONSE.content
     severity: HIGH
     metadata:
       cwe: "CWE-79"
@@ -31,10 +50,8 @@ rules:
   - id: llm02-llm-response-injection
     message: "Potential LLM response injection: Response content used in dynamic code"
     languages: [python, javascript, typescript]
-    patterns:
-      - pattern: ".*response.*content.*import|importlib|__import__.*"
-      - pattern: ".*llm.*output.*Function|eval|setTimeout.*"
-      - pattern: ".*content.*JSON\\.parse|yaml\\.load.*"
+    pattern: |
+      import $LLM_RESPONSE.content
     severity: HIGH
     metadata:
       cwe: "CWE-94"

@@ -2,10 +2,9 @@ rules:
   - id: llm10-model-theft-extraction
     message: "Model theft risk: Potential model parameter extraction or reverse engineering"
     languages: [python, javascript, typescript]
-    patterns:
-      - pattern: ".*extract.*weights|parameters.*model.*"
-      - pattern: ".*dump.*model.*state|dict.*"
-      - pattern: ".*reverse.*engineer.*llm|ai.*"
+    pattern: |
+      $PARAMS = $MODEL.state_dict()
+      save_weights($PARAMS)
     severity: HIGH
     metadata:
       cwe: "CWE-200"
@@ -16,10 +15,8 @@ rules:
   - id: llm10-model-stealing-attacks
     message: "Model stealing attacks: Techniques to replicate model behavior"
     languages: [python, javascript, typescript]
-    patterns:
-      - pattern: ".*steal.*model|copy.*weights.*"
-      - pattern: ".*replicate.*llm.*behavior.*"
-      - pattern: ".*adversarial.*extraction|theft.*"
+    pattern: |
+      $STOLEN_MODEL = copy.deepcopy($ORIGINAL_MODEL)
     severity: HIGH
     metadata:
       cwe: "CWE-200"
@@ -30,10 +27,8 @@ rules:
   - id: llm10-unauthorized-model-access
     message: "Unauthorized model access: Accessing models without proper authentication"
     languages: [python, javascript, typescript]
-    patterns:
-      - pattern: ".*bypass.*auth.*model|llm.*"
-      - pattern: ".*unauthorized.*access.*ai.*service.*"
-      - pattern: ".*model.*endpoint.*no.*auth.*"
+    pattern: |
+      $MODEL = load_model_from_url("http://...")
     severity: CRITICAL
     metadata:
       cwe: "CWE-284"

@@ -1,0 +1,24 @@
+{
+    "name": "tavo-ai-ethics-rules",
+    "version": "1.0.0",
+    "description": "AI ethics, bias detection, and fairness rules",
+    "rules": [],
+    "categories": {
+        "bias-detection": "Bias and discrimination detection",
+        "fairness": "Algorithmic fairness rules",
+        "toxicity": "Content toxicity and harmful output detection"
+    },
+    "metadata": {
+        "total_rules": 0,
+        "last_updated": "2024-01-01",
+        "languages": [
+            "python",
+            "javascript",
+            "typescript"
+        ],
+        "engines": [
+            "opengrep",
+            "opa"
+        ]
+    }
+}

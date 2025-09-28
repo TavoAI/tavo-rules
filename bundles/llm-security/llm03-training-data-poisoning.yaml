@@ -2,10 +2,8 @@ rules:
   - id: llm03-training-data-poisoning
     message: "Training data poisoning risk: Untrusted data sources used for model training"
     languages: [python, javascript, typescript]
-    patterns:
-      - pattern: ".*train.*data.*url|http|api.*"
-      - pattern: ".*dataset.*load.*untrusted|external.*"
-      - pattern: ".*fine_tune.*data.*user.*input.*"
+    pattern: |
+      $MODEL.train($DATA.from_url(...))
     severity: HIGH
     metadata:
       cwe: "CWE-20"
@@ -16,10 +14,8 @@ rules:
   - id: llm03-data-validation-missing
     message: "Missing data validation: Training data not validated before use"
     languages: [python, javascript, typescript]
-    patterns:
-      - pattern: ".*train.*data.*load.*"
-      - pattern-not: ".*validate|sanitize|clean.*"
-      - pattern: ".*dataset.*from.*file|url.*"
+    pattern: |
+      $MODEL.train($DATA)
     severity: MEDIUM
     metadata:
       cwe: "CWE-20"
@@ -30,10 +26,9 @@ rules:
   - id: llm03-malicious-dataset-handling
     message: "Potential malicious dataset handling: Direct processing of user-provided datasets"
     languages: [python, javascript, typescript]
-    patterns:
-      - pattern: ".*upload.*dataset|data.*file.*"
-      - pattern: ".*user.*data.*train|fine_tune.*"
-      - pattern: ".*request\\.files.*train.*"
+    pattern: |
+      $DATASET = request.files['dataset']
+      $MODEL.train($DATASET)
     severity: HIGH
     metadata:
       cwe: "CWE-434"

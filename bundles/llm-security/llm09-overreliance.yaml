@@ -1,0 +1,41 @@
+rules:
+  - id: llm09-overreliance-single-source
+    message: "Overreliance: System depends only on single LLM provider"
+    languages: [python, javascript, typescript]
+    pattern: |
+      if $CONDITION:
+        $RESPONSE = openai.chat.completions.create(...)
+      else:
+        $RESPONSE = openai.chat.completions.create(...)
+    severity: MEDIUM
+    metadata:
+      cwe: "CWE-710"
+      owasp-llm: "LLM09"
+      category: "overreliance"
+      description: "Detects systems that rely exclusively on single LLM providers"
+
+  - id: llm09-unvalidated-llm-output
+    message: "Unvalidated LLM decisions: Critical actions based on LLM output"
+    languages: [python, javascript, typescript]
+    pattern: |
+      if $LLM_RESPONSE == "approve":
+        $CRITICAL_ACTION()
+    severity: HIGH
+    metadata:
+      cwe: "CWE-807"
+      owasp-llm: "LLM09"
+      category: "overreliance"
+      description: "Detects critical decisions made based on unvalidated LLM output"
+
+  - id: llm09-blind-trust-llm
+    message: "Blind trust in LLM: Complete reliance without verification"
+    languages: [python, javascript, typescript]
+    pattern: |
+      $RESULT = $LLM.generate_answer($QUESTION)
+      return $RESULT
+    severity: MEDIUM
+    metadata:
+      cwe: "CWE-807"
+      owasp-llm: "LLM09"
+      category: "overreliance"
+      description: "Detects blind trust in LLM outputs without any validation"

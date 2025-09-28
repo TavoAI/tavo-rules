@@ -2,10 +2,12 @@ rules:
   - id: llm04-model-dos-unlimited-tokens
     message: "Model DoS risk: Unlimited token generation without rate limiting"
     languages: [python, javascript, typescript]
-    patterns:
-      - pattern: ".*max_tokens.*None|null|undefined.*"
-      - pattern: ".*completions.*create.*"
-      - pattern-not: ".*max_tokens.*[0-9]+.*"
+    pattern: |
+      $LLM.chat.completions.create(
+        ...,
+        max_tokens=None,
+        ...
+      )
     severity: MEDIUM
     metadata:
       cwe: "CWE-400"
@@ -16,10 +18,9 @@ rules:
   - id: llm04-infinite-loop-generation
     message: "Potential infinite generation loop: No termination conditions for LLM calls"
     languages: [python, javascript, typescript]
-    patterns:
-      - pattern: "while.*True|true.*:"
-      - pattern-inside: ".*llm|openai|anthropic.*generate|create.*"
-      - pattern-not: ".*break|return|exit.*"
+    pattern: |
+      while True:
+        $RESPONSE = $LLM.generate(...)
     severity: HIGH
     metadata:
       cwe: "CWE-835"
@@ -30,10 +31,9 @@ rules:
   - id: llm04-resource-exhaustion
     message: "Resource exhaustion risk: Large batch processing without limits"
     languages: [python, javascript, typescript]
-    patterns:
-      - pattern: ".*batch.*process.*llm|openai.*"
-      - pattern: ".*for.*in.*large.*data.*"
-      - pattern-not: ".*limit|batch_size.*[0-9]+.*"
+    pattern: |
+      for $ITEM in $LARGE_DATASET:
+        $LLM.process($ITEM)
     severity: MEDIUM
     metadata:
       cwe: "CWE-400"

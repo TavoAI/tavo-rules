@@ -2,6 +2,26 @@
 
 Open source security rule bundles for Tavo AI security scanning.
 
+## Repository Structure
+
+```text
+tavo-rules/
+├── bundles/                    # Rule bundles directory
+│   ├── llm-security/          # OWASP LLM Top 10 rules
+│   ├── ai-ethics/             # AI ethics and fairness rules
+│   ├── compliance/            # Regulatory compliance rules
+│   ├── infrastructure/        # Cloud/container security rules
+│   └── application/           # Web/API security rules
+├── README.md                  # This file
+└── LICENSE                    # Open source license
+```
+
+Each bundle directory contains:
+
+- `index.json`: Bundle metadata and rule catalog
+- `*.yaml`: OpenGrep pattern matching rules
+- `*.rego`: OPA policy evaluation rules (future)
+
 ## Bundle Categories
 
 - **llm-security**: OWASP LLM Top 10 and AI security rules
