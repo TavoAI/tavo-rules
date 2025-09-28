@@ -1,0 +1,43 @@
+rules:
+  - id: llm02-insecure-output-handling
+    message: "Insecure output handling: LLM response used directly in security-sensitive operations"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: eval\(.*llm|openai|anthropic.*response|content.*\)
+      - pattern: exec\(.*llm|openai|anthropic.*response|content.*\)
+      - pattern: ".*response.*content.*sql|query.*"
+      - pattern: ".*llm.*output.*os\\.system|subprocess.*"
+    severity: CRITICAL
+    metadata:
+      cwe: "CWE-95"
+      owasp-llm: "LLM02"
+      category: "insecure-output-handling"
+      description: "Detects direct use of LLM responses in code execution or database operations"
+
+  - id: llm02-unvalidated-llm-output
+    message: "Unvalidated LLM output: Response used without validation or sanitization"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: ".*llm.*response.*content.*render|html|innerHTML.*"
+      - pattern: ".*openai.*content.*redirect|location.*"
+      - pattern: ".*anthropic.*output.*file.*write.*"
+    severity: HIGH
+    metadata:
+      cwe: "CWE-79"
+      owasp-llm: "LLM02"
+      category: "insecure-output-handling"
+      description: "Detects LLM output used in HTML rendering, redirects, or file operations without validation"
+
+  - id: llm02-llm-response-injection
+    message: "Potential LLM response injection: Response content used in dynamic code"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: ".*response.*content.*import|importlib|__import__.*"
+      - pattern: ".*llm.*output.*Function|eval|setTimeout.*"
+      - pattern: ".*content.*JSON\\.parse|yaml\\.load.*"
+    severity: HIGH
+    metadata:
+      cwe: "CWE-94"
+      owasp-llm: "LLM02"
+      category: "insecure-output-handling"
+      description: "Detects LLM responses used in dynamic imports, code execution, or unsafe parsing"

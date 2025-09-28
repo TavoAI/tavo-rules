@@ -1,0 +1,42 @@
+rules:
+  - id: llm01-prompt-injection-basic
+    message: "Potential prompt injection vulnerability: Direct user input passed to LLM without validation"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: |
+          (openai|anthropic|claude|gpt|llm)\.chat\.completions\.create\(
+          .*
+          messages.*\{.*role.*user.*content.*\$[a-zA-Z_][a-zA-Z0-9_]*.*\}.*
+          \)
+    severity: HIGH
+    metadata:
+      cwe: "CWE-77"
+      owasp-llm: "LLM01"
+      category: "prompt-injection"
+      description: "Detects direct user input being passed to LLM APIs without sanitization"
+
+  - id: llm01-prompt-injection-template
+    message: "Potential prompt injection: String interpolation in prompt templates"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: f?".*\{.*\}.*system|user|assistant.*"
+      - pattern: ".*\\$\\{.*\\}.*prompt|template.*"
+    severity: MEDIUM
+    metadata:
+      cwe: "CWE-77"
+      owasp-llm: "LLM01"
+      category: "prompt-injection"
+      description: "Detects template string interpolation that could lead to prompt injection"
+
+  - id: llm01-untrusted-prompt-concat
+    message: "Potential prompt injection: Untrusted input concatenated with prompts"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: ".*\\+.*input|user_input|request\\.args|req\\.body.*"
+      - pattern: ".*str\\.format.*input|user_input.*"
+    severity: HIGH
+    metadata:
+      cwe: "CWE-77"
+      owasp-llm: "LLM01"
+      category: "prompt-injection"
+      description: "Detects string concatenation with untrusted user input in prompts"

@@ -1,0 +1,42 @@
+rules:
+  - id: llm09-overreliance-single-source
+    message: "Overreliance risk: Single LLM provider used without fallback or validation"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: ".*only.*openai|anthropic|claude.*"
+      - pattern: ".*single.*llm|ai.*provider.*"
+      - pattern-not: ".*fallback|backup|alternative.*"
+    severity: MEDIUM
+    metadata:
+      cwe: "CWE-710"
+      owasp-llm: "LLM09"
+      category: "overreliance"
+      description: "Detects overreliance on single LLM providers without redundancy"
+
+  - id: llm09-unvalidated-llm-output
+    message: "Unvalidated LLM output: Critical decisions based solely on LLM responses"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: ".*llm.*response.*decision|action.*"
+      - pattern: ".*ai.*output.*final|definitive.*"
+      - pattern-not: ".*validate|verify|check.*"
+    severity: HIGH
+    metadata:
+      cwe: "CWE-710"
+      owasp-llm: "LLM09"
+      category: "overreliance"
+      description: "Detects critical decisions made based solely on unvalidated LLM outputs"
+
+  - id: llm09-blind-trust-llm
+    message: "Blind trust in LLM: No verification of LLM-generated content accuracy"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: ".*trust.*llm|ai.*completely.*"
+      - pattern: ".*llm.*always.*correct|accurate.*"
+      - pattern: ".*ai.*output.*assume.*true.*"
+    severity: MEDIUM
+    metadata:
+      cwe: "CWE-710"
+      owasp-llm: "LLM09"
+      category: "overreliance"
+      description: "Detects blind trust in LLM outputs without verification mechanisms"

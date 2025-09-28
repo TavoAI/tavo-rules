@@ -1,0 +1,42 @@
+rules:
+  - id: llm08-excessive-agency
+    message: "Excessive agency: LLM granted autonomous decision-making capabilities"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: ".*llm.*decide.*action|execute.*"
+      - pattern: ".*autonomous.*agent.*run|start.*"
+      - pattern: ".*ai.*control.*system|infrastructure.*"
+    severity: HIGH
+    metadata:
+      cwe: "CWE-284"
+      owasp-llm: "LLM08"
+      category: "excessive-agency"
+      description: "Detects LLMs granted excessive autonomous decision-making capabilities"
+
+  - id: llm08-unrestricted-actions
+    message: "Unrestricted actions: LLM can perform high-risk operations without oversight"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: ".*llm.*delete|remove|destroy.*"
+      - pattern: ".*ai.*modify.*database|system.*"
+      - pattern: ".*agent.*access.*admin|root.*"
+    severity: CRITICAL
+    metadata:
+      cwe: "CWE-284"
+      owasp-llm: "LLM08"
+      category: "excessive-agency"
+      description: "Detects LLMs with access to perform high-risk operations"
+
+  - id: llm08-missing-human-oversight
+    message: "Missing human oversight: Critical decisions made without human approval"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: ".*llm.*approve|authorize.*payment|transaction.*"
+      - pattern: ".*ai.*deploy|release.*production.*"
+      - pattern: ".*agent.*make.*decision.*critical.*"
+    severity: HIGH
+    metadata:
+      cwe: "CWE-284"
+      owasp-llm: "LLM08"
+      category: "excessive-agency"
+      description: "Detects critical decisions made by LLMs without human oversight"

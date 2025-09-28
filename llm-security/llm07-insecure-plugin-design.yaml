@@ -1,0 +1,42 @@
+rules:
+  - id: llm07-insecure-plugin-design
+    message: "Insecure plugin design: Plugins with excessive permissions or unrestricted access"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: ".*plugin.*exec|eval|system.*"
+      - pattern: ".*extension.*subprocess|shell.*"
+      - pattern: ".*tool.*os\\.system|popen.*"
+    severity: HIGH
+    metadata:
+      cwe: "CWE-284"
+      owasp-llm: "LLM07"
+      category: "insecure-plugin-design"
+      description: "Detects plugins with excessive system access or code execution capabilities"
+
+  - id: llm07-unsafe-plugin-loading
+    message: "Unsafe plugin loading: Dynamic loading of untrusted plugins"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: ".*importlib.*import_module.*user|external.*"
+      - pattern: ".*require.*path.*user.*input.*"
+      - pattern: ".*load.*plugin.*url|remote.*"
+    severity: HIGH
+    metadata:
+      cwe: "CWE-427"
+      owasp-llm: "LLM07"
+      category: "insecure-plugin-design"
+      description: "Detects dynamic loading of plugins from untrusted sources"
+
+  - id: llm07-plugin-sandbox-escape
+    message: "Plugin sandbox escape: Potential bypass of plugin isolation mechanisms"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: ".*plugin.*escape|sandbox.*bypass.*"
+      - pattern: ".*tool.*override|modify.*security.*"
+      - pattern: ".*extension.*access.*parent|global.*"
+    severity: CRITICAL
+    metadata:
+      cwe: "CWE-693"
+      owasp-llm: "LLM07"
+      category: "insecure-plugin-design"
+      description: "Detects attempts to escape plugin sandbox or bypass security controls"

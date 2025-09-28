@@ -1,0 +1,42 @@
+rules:
+  - id: llm10-model-theft-extraction
+    message: "Model theft risk: Potential model parameter extraction or reverse engineering"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: ".*extract.*weights|parameters.*model.*"
+      - pattern: ".*dump.*model.*state|dict.*"
+      - pattern: ".*reverse.*engineer.*llm|ai.*"
+    severity: HIGH
+    metadata:
+      cwe: "CWE-200"
+      owasp-llm: "LLM10"
+      category: "model-theft"
+      description: "Detects attempts to extract or reverse engineer model parameters"
+
+  - id: llm10-model-stealing-attacks
+    message: "Model stealing attacks: Techniques to replicate model behavior"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: ".*steal.*model|copy.*weights.*"
+      - pattern: ".*replicate.*llm.*behavior.*"
+      - pattern: ".*adversarial.*extraction|theft.*"
+    severity: HIGH
+    metadata:
+      cwe: "CWE-200"
+      owasp-llm: "LLM10"
+      category: "model-theft"
+      description: "Detects adversarial techniques for model theft or replication"
+
+  - id: llm10-unauthorized-model-access
+    message: "Unauthorized model access: Accessing models without proper authentication"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: ".*bypass.*auth.*model|llm.*"
+      - pattern: ".*unauthorized.*access.*ai.*service.*"
+      - pattern: ".*model.*endpoint.*no.*auth.*"
+    severity: CRITICAL
+    metadata:
+      cwe: "CWE-284"
+      owasp-llm: "LLM10"
+      category: "model-theft"
+      description: "Detects unauthorized access to model endpoints or services"

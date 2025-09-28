@@ -1,0 +1,42 @@
+rules:
+  - id: llm05-supply-chain-untrusted-package
+    message: "Supply chain risk: Untrusted or unofficial LLM packages used"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: ".*pip.*install.*git\\+|github.*llm|ai.*"
+      - pattern: ".*npm.*install.*git\\+|github.*llm|ai.*"
+      - pattern: ".*from.*untrusted.*import.*"
+    severity: HIGH
+    metadata:
+      cwe: "CWE-1357"
+      owasp-llm: "LLM05"
+      category: "supply-chain-vulnerabilities"
+      description: "Detects installation of untrusted LLM packages from unofficial sources"
+
+  - id: llm05-outdated-dependencies
+    message: "Outdated dependencies: Using deprecated or vulnerable LLM library versions"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: "openai.*[<>=].*[0-1]\\."
+      - pattern: "anthropic.*[<>=].*[0-1]\\."
+      - pattern: "transformers.*[<>=].*[0-4]\\."
+    severity: MEDIUM
+    metadata:
+      cwe: "CWE-1104"
+      owasp-llm: "LLM05"
+      category: "supply-chain-vulnerabilities"
+      description: "Detects use of outdated or vulnerable LLM library versions"
+
+  - id: llm05-malicious-model-loading
+    message: "Malicious model loading: Models loaded from untrusted sources"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: ".*load.*model.*url|http.*"
+      - pattern: ".*from_pretrained.*untrusted|external.*"
+      - pattern: ".*torch\\.load.*remote|url.*"
+    severity: HIGH
+    metadata:
+      cwe: "CWE-502"
+      owasp-llm: "LLM05"
+      category: "supply-chain-vulnerabilities"
+      description: "Detects loading of models from untrusted or remote sources"

@@ -1,0 +1,42 @@
+rules:
+  - id: llm03-training-data-poisoning
+    message: "Training data poisoning risk: Untrusted data sources used for model training"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: ".*train.*data.*url|http|api.*"
+      - pattern: ".*dataset.*load.*untrusted|external.*"
+      - pattern: ".*fine_tune.*data.*user.*input.*"
+    severity: HIGH
+    metadata:
+      cwe: "CWE-20"
+      owasp-llm: "LLM03"
+      category: "training-data-poisoning"
+      description: "Detects use of untrusted or external data sources for model training"
+
+  - id: llm03-data-validation-missing
+    message: "Missing data validation: Training data not validated before use"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: ".*train.*data.*load.*"
+      - pattern-not: ".*validate|sanitize|clean.*"
+      - pattern: ".*dataset.*from.*file|url.*"
+    severity: MEDIUM
+    metadata:
+      cwe: "CWE-20"
+      owasp-llm: "LLM03"
+      category: "training-data-poisoning"
+      description: "Detects training data loading without validation steps"
+
+  - id: llm03-malicious-dataset-handling
+    message: "Potential malicious dataset handling: Direct processing of user-provided datasets"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: ".*upload.*dataset|data.*file.*"
+      - pattern: ".*user.*data.*train|fine_tune.*"
+      - pattern: ".*request\\.files.*train.*"
+    severity: HIGH
+    metadata:
+      cwe: "CWE-434"
+      owasp-llm: "LLM03"
+      category: "training-data-poisoning"
+      description: "Detects direct processing of user-uploaded datasets for training"

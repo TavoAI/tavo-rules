@@ -1,0 +1,42 @@
+rules:
+  - id: llm06-sensitive-info-disclosure
+    message: "Sensitive information disclosure: Potential leakage of secrets or PII in prompts"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: ".*password|secret|key|token.*prompt|message.*"
+      - pattern: ".*api_key|auth_token.*content.*"
+      - pattern: ".*ssn|social.*security.*llm|openai.*"
+    severity: CRITICAL
+    metadata:
+      cwe: "CWE-200"
+      owasp-llm: "LLM06"
+      category: "sensitive-information-disclosure"
+      description: "Detects potential disclosure of sensitive information in LLM prompts"
+
+  - id: llm06-debug-info-leakage
+    message: "Debug information leakage: Internal system details exposed in LLM interactions"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: ".*debug|verbose.*true.*llm|openai.*"
+      - pattern: ".*system.*info|version.*prompt.*"
+      - pattern: ".*internal.*path|config.*content.*"
+    severity: HIGH
+    metadata:
+      cwe: "CWE-200"
+      owasp-llm: "LLM06"
+      category: "sensitive-information-disclosure"
+      description: "Detects exposure of debug information or internal system details"
+
+  - id: llm06-training-data-leakage
+    message: "Training data leakage: Proprietary training data potentially exposed"
+    languages: [python, javascript, typescript]
+    patterns:
+      - pattern: ".*training.*data.*print|log.*"
+      - pattern: ".*dataset.*content.*response.*"
+      - pattern: ".*proprietary.*data.*llm.*output.*"
+    severity: HIGH
+    metadata:
+      cwe: "CWE-200"
+      owasp-llm: "LLM06"
+      category: "sensitive-information-disclosure"
+      description: "Detects potential leakage of proprietary training data through LLM outputs"

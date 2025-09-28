@@ -1,0 +1,296 @@
+{
+  "name": "tavo-llm-security-rules",
+  "version": "1.0.0",
+  "description": "OWASP LLM Top 10 security rules for Tavo AI scanning",
+  "rules": [
+    {
+      "id": "llm01-prompt-injection-basic",
+      "file": "llm01-prompt-injection.yaml",
+      "category": "prompt-injection",
+      "severity": "HIGH",
+      "cwe": "CWE-77",
+      "owasp-llm": "LLM01",
+      "description": "Detects direct user input being passed to LLM APIs without sanitization"
+    },
+    {
+      "id": "llm01-prompt-injection-template",
+      "file": "llm01-prompt-injection.yaml",
+      "category": "prompt-injection",
+      "severity": "MEDIUM",
+      "cwe": "CWE-77",
+      "owasp-llm": "LLM01",
+      "description": "Detects template string interpolation that could lead to prompt injection"
+    },
+    {
+      "id": "llm01-untrusted-prompt-concat",
+      "file": "llm01-prompt-injection.yaml",
+      "category": "prompt-injection",
+      "severity": "HIGH",
+      "cwe": "CWE-77",
+      "owasp-llm": "LLM01",
+      "description": "Detects string concatenation with untrusted user input in prompts"
+    },
+    {
+      "id": "llm02-insecure-output-handling",
+      "file": "llm02-insecure-output-handling.yaml",
+      "category": "insecure-output-handling",
+      "severity": "CRITICAL",
+      "cwe": "CWE-95",
+      "owasp-llm": "LLM02",
+      "description": "Detects direct use of LLM responses in code execution or database operations"
+    },
+    {
+      "id": "llm02-unvalidated-llm-output",
+      "file": "llm02-insecure-output-handling.yaml",
+      "category": "insecure-output-handling",
+      "severity": "HIGH",
+      "cwe": "CWE-79",
+      "owasp-llm": "LLM02",
+      "description": "Detects LLM output used in HTML rendering, redirects, or file operations without validation"
+    },
+    {
+      "id": "llm02-llm-response-injection",
+      "file": "llm02-insecure-output-handling.yaml",
+      "category": "insecure-output-handling",
+      "severity": "HIGH",
+      "cwe": "CWE-94",
+      "owasp-llm": "LLM02",
+      "description": "Detects LLM responses used in dynamic imports, code execution, or unsafe parsing"
+    },
+    {
+      "id": "llm03-training-data-poisoning",
+      "file": "llm03-training-data-poisoning.yaml",
+      "category": "training-data-poisoning",
+      "severity": "HIGH",
+      "cwe": "CWE-20",
+      "owasp-llm": "LLM03",
+      "description": "Detects use of untrusted or external data sources for model training"
+    },
+    {
+      "id": "llm03-data-validation-missing",
+      "file": "llm03-training-data-poisoning.yaml",
+      "category": "training-data-poisoning",
+      "severity": "MEDIUM",
+      "cwe": "CWE-20",
+      "owasp-llm": "LLM03",
+      "description": "Detects training data loading without validation steps"
+    },
+    {
+      "id": "llm03-malicious-dataset-handling",
+      "file": "llm03-training-data-poisoning.yaml",
+      "category": "training-data-poisoning",
+      "severity": "HIGH",
+      "cwe": "CWE-434",
+      "owasp-llm": "LLM03",
+      "description": "Detects direct processing of user-uploaded datasets for training"
+    },
+    {
+      "id": "llm04-model-dos-unlimited-tokens",
+      "file": "llm04-model-denial-of-service.yaml",
+      "category": "model-denial-of-service",
+      "severity": "MEDIUM",
+      "cwe": "CWE-400",
+      "owasp-llm": "LLM04",
+      "description": "Detects unlimited token generation that could lead to resource exhaustion"
+    },
+    {
+      "id": "llm04-infinite-loop-generation",
+      "file": "llm04-model-denial-of-service.yaml",
+      "category": "model-denial-of-service",
+      "severity": "HIGH",
+      "cwe": "CWE-835",
+      "owasp-llm": "LLM04",
+      "description": "Detects infinite loops that could cause continuous LLM API calls"
+    },
+    {
+      "id": "llm04-resource-exhaustion",
+      "file": "llm04-model-denial-of-service.yaml",
+      "category": "model-denial-of-service",
+      "severity": "MEDIUM",
+      "cwe": "CWE-400",
+      "owasp-llm": "LLM04",
+      "description": "Detects large-scale batch processing without resource limits"
+    },
+    {
+      "id": "llm05-supply-chain-untrusted-package",
+      "file": "llm05-supply-chain-vulnerabilities.yaml",
+      "category": "supply-chain-vulnerabilities",
+      "severity": "HIGH",
+      "cwe": "CWE-1357",
+      "owasp-llm": "LLM05",
+      "description": "Detects installation of untrusted LLM packages from unofficial sources"
+    },
+    {
+      "id": "llm05-outdated-dependencies",
+      "file": "llm05-supply-chain-vulnerabilities.yaml",
+      "category": "supply-chain-vulnerabilities",
+      "severity": "MEDIUM",
+      "cwe": "CWE-1104",
+      "owasp-llm": "LLM05",
+      "description": "Detects use of outdated or vulnerable LLM library versions"
+    },
+    {
+      "id": "llm05-malicious-model-loading",
+      "file": "llm05-supply-chain-vulnerabilities.yaml",
+      "category": "supply-chain-vulnerabilities",
+      "severity": "HIGH",
+      "cwe": "CWE-502",
+      "owasp-llm": "LLM05",
+      "description": "Detects loading of models from untrusted or remote sources"
+    },
+    {
+      "id": "llm06-sensitive-info-disclosure",
+      "file": "llm06-sensitive-information-disclosure.yaml",
+      "category": "sensitive-information-disclosure",
+      "severity": "CRITICAL",
+      "cwe": "CWE-200",
+      "owasp-llm": "LLM06",
+      "description": "Detects potential disclosure of sensitive information in LLM prompts"
+    },
+    {
+      "id": "llm06-debug-info-leakage",
+      "file": "llm06-sensitive-information-disclosure.yaml",
+      "category": "sensitive-information-disclosure",
+      "severity": "HIGH",
+      "cwe": "CWE-200",
+      "owasp-llm": "LLM06",
+      "description": "Detects exposure of debug information or internal system details"
+    },
+    {
+      "id": "llm06-training-data-leakage",
+      "file": "llm06-sensitive-information-disclosure.yaml",
+      "category": "sensitive-information-disclosure",
+      "severity": "HIGH",
+      "cwe": "CWE-200",
+      "owasp-llm": "LLM06",
+      "description": "Detects potential leakage of proprietary training data through LLM outputs"
+    },
+    {
+      "id": "llm07-insecure-plugin-design",
+      "file": "llm07-insecure-plugin-design.yaml",
+      "category": "insecure-plugin-design",
+      "severity": "HIGH",
+      "cwe": "CWE-284",
+      "owasp-llm": "LLM07",
+      "description": "Detects plugins with excessive system access or code execution capabilities"
+    },
+    {
+      "id": "llm07-unsafe-plugin-loading",
+      "file": "llm07-insecure-plugin-design.yaml",
+      "category": "insecure-plugin-design",
+      "severity": "HIGH",
+      "cwe": "CWE-427",
+      "owasp-llm": "LLM07",
+      "description": "Detects dynamic loading of plugins from untrusted sources"
+    },
+    {
+      "id": "llm07-plugin-sandbox-escape",
+      "file": "llm07-insecure-plugin-design.yaml",
+      "category": "insecure-plugin-design",
+      "severity": "CRITICAL",
+      "cwe": "CWE-693",
+      "owasp-llm": "LLM07",
+      "description": "Detects attempts to escape plugin sandbox or bypass security controls"
+    },
+    {
+      "id": "llm08-excessive-agency",
+      "file": "llm08-excessive-agency.yaml",
+      "category": "excessive-agency",
+      "severity": "HIGH",
+      "cwe": "CWE-284",
+      "owasp-llm": "LLM08",
+      "description": "Detects LLMs granted excessive autonomous decision-making capabilities"
+    },
+    {
+      "id": "llm08-unrestricted-actions",
+      "file": "llm08-excessive-agency.yaml",
+      "category": "excessive-agency",
+      "severity": "CRITICAL",
+      "cwe": "CWE-284",
+      "owasp-llm": "LLM08",
+      "description": "Detects LLMs with access to perform high-risk operations"
+    },
+    {
+      "id": "llm08-missing-human-oversight",
+      "file": "llm08-excessive-agency.yaml",
+      "category": "excessive-agency",
+      "severity": "HIGH",
+      "cwe": "CWE-284",
+      "owasp-llm": "LLM08",
+      "description": "Detects critical decisions made by LLMs without human oversight"
+    },
+    {
+      "id": "llm09-overreliance-single-source",
+      "file": "llm09-overreliance.yaml",
+      "category": "overreliance",
+      "severity": "MEDIUM",
+      "cwe": "CWE-710",
+      "owasp-llm": "LLM09",
+      "description": "Detects overreliance on single LLM providers without redundancy"
+    },
+    {
+      "id": "llm09-unvalidated-llm-output",
+      "file": "llm09-overreliance.yaml",
+      "category": "overreliance",
+      "severity": "HIGH",
+      "cwe": "CWE-710",
+      "owasp-llm": "LLM09",
+      "description": "Detects critical decisions made based solely on unvalidated LLM outputs"
+    },
+    {
+      "id": "llm09-blind-trust-llm",
+      "file": "llm09-overreliance.yaml",
+      "category": "overreliance",
+      "severity": "MEDIUM",
+      "cwe": "CWE-710",
+      "owasp-llm": "LLM09",
+      "description": "Detects blind trust in LLM outputs without verification mechanisms"
+    },
+    {
+      "id": "llm10-model-theft-extraction",
+      "file": "llm10-model-theft.yaml",
+      "category": "model-theft",
+      "severity": "HIGH",
+      "cwe": "CWE-200",
+      "owasp-llm": "LLM10",
+      "description": "Detects attempts to extract or reverse engineer model parameters"
+    },
+    {
+      "id": "llm10-model-stealing-attacks",
+      "file": "llm10-model-theft.yaml",
+      "category": "model-theft",
+      "severity": "HIGH",
+      "cwe": "CWE-200",
+      "owasp-llm": "LLM10",
+      "description": "Detects adversarial techniques for model theft or replication"
+    },
+    {
+      "id": "llm10-unauthorized-model-access",
+      "file": "llm10-model-theft.yaml",
+      "category": "model-theft",
+      "severity": "CRITICAL",
+      "cwe": "CWE-284",
+      "owasp-llm": "LLM10",
+      "description": "Detects unauthorized access to model endpoints or services"
+    }
+  ],
+  "categories": {
+    "prompt-injection": "LLM01 - Prompt Injection",
+    "insecure-output-handling": "LLM02 - Insecure Output Handling",
+    "training-data-poisoning": "LLM03 - Training Data Poisoning",
+    "model-denial-of-service": "LLM04 - Model Denial of Service",
+    "supply-chain-vulnerabilities": "LLM05 - Supply Chain Vulnerabilities",
+    "sensitive-information-disclosure": "LLM06 - Sensitive Information Disclosure",
+    "insecure-plugin-design": "LLM07 - Insecure Plugin Design",
+    "excessive-agency": "LLM08 - Excessive Agency",
+    "overreliance": "LLM09 - Overreliance",
+    "model-theft": "LLM10 - Model Theft"
+  },
+  "metadata": {
+    "total_rules": 30,
+    "owasp_llm_version": "1.0",
+    "last_updated": "2024-01-01",
+    "languages": ["python", "javascript", "typescript"],
+    "engines": ["opengrep", "opa"]
+  }
+}
