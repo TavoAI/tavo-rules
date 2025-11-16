@@ -1,0 +1,15 @@
+[submodule "formats/semgrep-rules"]
+	path = formats/semgrep-rules
+	url = https://github.com/TavoAI/tavo-rules-opengrep.git
+
+[submodule "formats/opa-policies"]
+	path = formats/opa-policies
+	url = https://github.com/TavoAI/tavo-rules-opa.git
+
+[submodule "formats/yara-rules"]
+	path = formats/yara-rules
+	url = https://github.com/TavoAI/tavo-rules-yara.git
+
+[submodule "formats/sigma-rules"]
+	path = formats/sigma-rules
+	url = https://github.com/TavoAI/tavo-rules-sigma.git

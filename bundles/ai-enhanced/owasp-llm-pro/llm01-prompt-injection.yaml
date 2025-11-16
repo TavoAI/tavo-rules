@@ -1,0 +1,194 @@
+version: "1.0"
+id: "tavoai-owasp-llm01-pro"
+name: "OWASP LLM01: Prompt Injection (Pro)"
+category: "security"
+subcategory: "prompt-injection"
+severity: "critical"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-1395", "CWE-20", "CWE-502"]
+  capec: ["CAPEC-550", "CAPEC-137", "CAPEC-77"]
+  owasp_llm: ["LLM01"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+  - "google/gemini-pro"
+
+tags:
+  - "owasp-llm"
+  - "prompt-injection"
+  - "ai-enhanced"
+  - "critical"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python", "javascript", "typescript"]
+    pattern: |
+      # Direct user input in LLM API calls
+      $LLM.chat.completions.create(
+        ...,
+        messages=[
+          ...,
+          {
+            "role": "user",
+            "content": $USER_INPUT
+          },
+          ...
+        ],
+        ...
+      )
+    message: "Direct user input in LLM API call - potential prompt injection"
+    severity: "high"
+
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # F-string interpolation in prompts
+      $PROMPT = f"...{$USER_VAR}..."
+      $LLM.generate($PROMPT)
+    message: "F-string interpolation with user input - potential injection"
+    severity: "high"
+
+  - type: "semgrep"
+    languages: ["python", "javascript", "typescript"]
+    pattern: |
+      # String concatenation in prompts
+      $PROMPT = $BASE_PROMPT + $USER_INPUT
+      $RESPONSE = $LLM($PROMPT)
+    message: "String concatenation with user input in prompt"
+    severity: "high"
+
+  - type: "opa"
+    policy: |
+      package llm01_pro
+
+      deny[msg] {
+        input.code contains "prompt"
+        input.code contains "user"
+        not input.code contains "sanitize"
+        not input.code contains "validate"
+        not input.code contains "escape"
+        msg := "Unvalidated user input in prompt construction"
+      }
+
+ai_analysis:
+  trigger:
+    - "heuristics_matched"
+    - "high_risk_files"
+
+  high_risk_patterns:
+    - "*/ai/*"
+    - "*/llm/*"
+    - "*/chatbot/*"
+    - "*/nlp/*"
+
+  prompt_template: |
+    You are a senior security engineer specializing in LLM and AI security with 15+ years of experience.
+    You have deep expertise in prompt injection attacks, jailbreak techniques, and LLM vulnerabilities.
+
+    Analyze this code for prompt injection vulnerabilities:
+
+    Code to analyze:
+    ```{language}
+    {code_snippet}
+    ```
+
+    File: {file_path}
+    Line: {line_number}
+    Heuristic findings: {heuristic_findings}
+
+    Conduct a comprehensive security analysis focusing on:
+
+    1. **Input Validation & Sanitization**:
+       - Are user inputs validated before prompt construction?
+       - Is input sanitization applied to prevent injection?
+       - Are input length and content restrictions in place?
+
+    2. **Prompt Construction Security**:
+       - How are prompts built (string concat, templates, etc.)?
+       - Are user inputs properly isolated from system instructions?
+       - Is there clear separation between user and system contexts?
+
+    3. **Jailbreak & Manipulation Detection**:
+       - Could inputs contain role manipulation attempts?
+       - Are there delimiter injection possibilities?
+       - Could inputs override system instructions?
+
+    4. **Context & Scope Analysis**:
+       - What is the LLM's intended function in this code?
+       - Could injection compromise the application's security model?
+       - Are there privilege escalation risks?
+
+    5. **Output Validation**:
+       - Is LLM output validated before use in security decisions?
+       - Are there safeguards against indirect prompt injection?
+
+    For each identified vulnerability, provide:
+    - Specific code locations (line numbers)
+    - Technical description of the vulnerability
+    - Potential exploit scenarios
+    - OWASP LLM Top 10 mapping details
+    - CWE/CAPEC correlations
+    - Remediation steps with code examples
+    - Risk severity assessment (low/medium/high/critical)
+    - Confidence score (0.0-1.0)
+
+    Be thorough but precise. Focus on actionable security findings.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity:
+        type: "string"
+        enum: ["low", "medium", "high", "critical"]
+      vulnerable_lines:
+        type: "array"
+        items:
+          type: "number"
+        minItems: 1
+      description:
+        type: "string"
+        minLength: 100
+        maxLength: 2000
+      remediation:
+        type: "string"
+        minLength: 100
+        maxLength: 2000
+      standards_mapping:
+        type: "object"
+        properties:
+          cwe:
+            type: "array"
+            items: { type: "string" }
+          capec:
+            type: "array"
+            items: { type: "string" }
+          owasp_llm:
+            type: "array"
+            items: { type: "string" }
+      confidence:
+        type: "number"
+        minimum: 0
+        maximum: 1
+
+execution:
+  max_tokens: 2500
+  temperature: 0.1
+  cache_results: true
+  cache_duration: "7d"
+  fallback_model: "openai/gpt-3.5-turbo"
+
+sarif_output:
+  rule_id: "tavoai-owasp-llm01-pro"
+  rule_name: "OWASP LLM01 Prompt Injection (Pro)"
+  short_description: "Advanced prompt injection detection with AI analysis"
+  full_description: "Comprehensive analysis of prompt injection vulnerabilities including direct injection, jailbreak attempts, and indirect manipulation techniques using hybrid heuristic + AI detection"
+  help_uri: "https://docs.tavoai.com/rules/owasp-llm01-pro"
+  tags:
+    - "security"
+    - "owasp-llm"
+    - "prompt-injection"
+    - "ai-enhanced"

@@ -1,0 +1,46 @@
+version: "1.0"
+id: "tavoai-owasp-llm03-basic"
+name: "OWASP LLM03: Training Data Poisoning (Basic)"
+category: "security"
+subcategory: "training-data"
+severity: "medium"
+rule_type: "opengrep"
+
+standards:
+  cwe: ["CWE-502", "CWE-20"]
+  capec: ["CAPEC-183", "CAPEC-184"]
+  owasp_llm: ["LLM03"]
+
+tags:
+  - "owasp-llm"
+  - "training-data"
+  - "basic"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Unvalidated data source for training
+      data = requests.get($URL)
+      model.fit(data)
+    message: "Unvalidated external data for model training"
+    severity: "medium"
+
+  - type: "opa"
+    policy: |
+      package llm03_basic
+      
+      deny[msg] {
+        input.code contains "fit"
+        input.code contains "requests"
+        not input.code contains "validate"
+        msg := "Unvalidated training data from external source"
+      }
+
+sarif_output:
+  rule_id: "tavoai-owasp-llm03-basic"
+  rule_name: "OWASP LLM03 Training Data Poisoning (Basic)"
+  short_description: "Detects basic training data poisoning patterns"
+  full_description: "Identifies unvalidated external data sources used for model training"
+  help_uri: "https://docs.tavoai.com/rules/owasp-llm03-basic"
+  tags: ["security", "owasp-llm", "training-data"]

@@ -1,0 +1,301 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tavoai.com/schemas/hybrid-rule-v1.0.json",
+  "title": "TavoAI Hybrid Rule Schema",
+  "description": "JSON Schema for TavoAI hybrid AI security rules combining heuristics with AI analysis",
+  "type": "object",
+  "required": [
+    "version",
+    "id",
+    "name",
+    "category",
+    "subcategory",
+    "severity",
+    "rule_type",
+    "tags"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$",
+      "description": "Rule format version (e.g., '1.0')"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^tavoai-[a-z0-9-]+[a-z0-9]$",
+      "description": "Unique rule identifier (e.g., 'tavoai-iso42001-risk-management')"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 200,
+      "description": "Human-readable rule name"
+    },
+    "category": {
+      "type": "string",
+      "enum": ["security", "compliance", "ethics", "performance"],
+      "description": "Primary rule category"
+    },
+    "subcategory": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 50,
+      "description": "Specific subcategory within the category"
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"],
+      "description": "Risk severity level"
+    },
+    "rule_type": {
+      "type": "string",
+      "enum": ["opengrep", "opa", "hybrid", "ai-only"],
+      "description": "Rule execution type"
+    },
+    "standards": {
+      "type": "object",
+      "description": "Standard security mappings",
+      "properties": {
+        "cwe": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^CWE-\\d+$"
+          },
+          "description": "CWE identifiers (e.g., ['CWE-1395'])"
+        },
+        "capec": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^CAPEC-\\d+$"
+          },
+          "description": "CAPEC identifiers (e.g., ['CAPEC-550'])"
+        },
+        "owasp_llm": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^LLM\\d{2}$"
+          },
+          "description": "OWASP LLM Top 10 identifiers (e.g., ['LLM01'])"
+        },
+        "iso_42001": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^\\d+\\.\\d+(\\.\\d+)?$"
+          },
+          "description": "ISO 42001 section references (e.g., ['7.2.1'])"
+        },
+        "nist_ai_rmf": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]+-\\d+\\.\\d+$"
+          },
+          "description": "NIST AI RMF references (e.g., ['GOVERN-1.3'])"
+        },
+        "mit_ai_risk": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "MIT AI Risk categories"
+        }
+      }
+    },
+    "compatible_models": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^(openai|google|anthropic|openrouter|azure|tavoai)/[a-zA-Z0-9._-]+$"
+      },
+      "description": "LLM models compatible with AI analysis",
+      "minItems": 1
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 50
+      },
+      "minItems": 1,
+      "description": "Searchable tags for discovery"
+    },
+    "heuristics": {
+      "type": "array",
+      "description": "Heuristic detection rules",
+      "items": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["semgrep", "opa"],
+            "description": "Heuristic engine type"
+          },
+          "languages": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["python", "javascript", "typescript", "java", "go", "c", "cpp", "csharp", "ruby", "php"]
+            },
+            "description": "Programming languages this heuristic applies to"
+          },
+          "pattern": {
+            "type": "string",
+            "minLength": 10,
+            "description": "Pattern or policy code for detection"
+          },
+          "message": {
+            "type": "string",
+            "minLength": 20,
+            "maxLength": 500,
+            "description": "Human-readable finding message"
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["low", "medium", "high", "critical"],
+            "description": "Heuristic-specific severity"
+          }
+        },
+        "oneOf": [
+          {
+            "required": ["pattern", "message"],
+            "properties": {
+              "type": { "enum": ["semgrep"] }
+            }
+          },
+          {
+            "required": ["pattern"],
+            "properties": {
+              "type": { "enum": ["opa"] }
+            }
+          }
+        ]
+      }
+    },
+    "ai_analysis": {
+      "type": "object",
+      "description": "AI-powered analysis configuration",
+      "required": ["prompt_template", "expected_response_schema"],
+      "properties": {
+        "trigger": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["always", "heuristics_matched", "high_risk_files", "complex_patterns"]
+          },
+          "description": "Conditions that trigger AI analysis",
+          "minItems": 1
+        },
+        "high_risk_patterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "File path patterns that trigger AI analysis"
+        },
+        "prompt_template": {
+          "type": "string",
+          "minLength": 100,
+          "description": "Template for AI analysis prompts"
+        },
+        "expected_response_schema": {
+          "type": "object",
+          "description": "Expected JSON schema for AI responses",
+          "required": ["type", "required", "properties"],
+          "properties": {
+            "type": { "enum": ["object"] },
+            "required": { "type": "array", "items": { "type": "string" } },
+            "properties": { "type": "object" }
+          }
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "description": "Execution configuration and cost optimization",
+      "properties": {
+        "max_tokens": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 10000,
+          "default": 2000
+        },
+        "temperature": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2,
+          "default": 0.1
+        },
+        "cache_results": {
+          "type": "boolean",
+          "default": true
+        },
+        "cache_duration": {
+          "type": "string",
+          "pattern": "^\\d+[dhms]$",
+          "default": "7d",
+          "description": "Cache duration (e.g., '7d', '24h', '3600s')"
+        },
+        "fallback_model": {
+          "type": "string",
+          "pattern": "^(openai|google|anthropic|openrouter|azure|tavoai)/[a-zA-Z0-9._-]+$",
+          "description": "Cheaper fallback model for cost optimization"
+        }
+      }
+    },
+    "sarif_output": {
+      "type": "object",
+      "description": "SARIF 2.1.0 output configuration",
+      "required": ["rule_id", "rule_name", "short_description"],
+      "properties": {
+        "rule_id": {
+          "type": "string",
+          "description": "SARIF rule identifier"
+        },
+        "rule_name": {
+          "type": "string",
+          "description": "Human-readable rule name"
+        },
+        "short_description": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Brief rule description"
+        },
+        "full_description": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Detailed rule description"
+        },
+        "help_uri": {
+          "type": "string",
+          "format": "uri",
+          "description": "Link to detailed documentation"
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "SARIF tags for categorization"
+        }
+      }
+    }
+  },
+  "if": {
+    "properties": { "rule_type": { "enum": ["hybrid", "ai-only"] } }
+  },
+  "then": {
+    "required": ["ai_analysis"],
+    "properties": {
+      "compatible_models": { "minItems": 1 }
+    }
+  },
+  "else": {
+    "properties": {
+      "heuristics": { "minItems": 1 }
+    }
+  }
+}

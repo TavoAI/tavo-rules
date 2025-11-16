@@ -1,0 +1,55 @@
+version: "1.0"
+id: "tavoai-owasp-llm02-basic"
+name: "OWASP LLM02: Insecure Output Handling (Basic)"
+category: "security"
+subcategory: "output-handling"
+severity: "high"
+rule_type: "opengrep"
+
+standards:
+  cwe: ["CWE-79", "CWE-89"]
+  capec: ["CAPEC-7", "CAPEC-66"]
+  owasp_llm: ["LLM02"]
+
+tags:
+  - "owasp-llm"
+  - "output-handling"
+  - "basic"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python", "javascript", "typescript"]
+    pattern: |
+      # Direct LLM output in HTML
+      html = "<div>" + $LLM_OUTPUT + "</div>"
+    message: "Direct LLM output in HTML - potential XSS"
+    severity: "high"
+
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # LLM output in SQL query
+      query = f"SELECT * FROM table WHERE content = '{llm_response}'"
+      cursor.execute(query)
+    message: "LLM output in SQL query - potential injection"
+    severity: "high"
+
+  - type: "opa"
+    policy: |
+      package llm02_basic
+      
+      deny[msg] {
+        input.code contains "llm"
+        input.code contains "html"
+        not input.code contains "escape"
+        not input.code contains "sanitize"
+        msg := "Unsanitized LLM output in HTML"
+      }
+
+sarif_output:
+  rule_id: "tavoai-owasp-llm02-basic"
+  rule_name: "OWASP LLM02 Insecure Output Handling (Basic)"
+  short_description: "Detects unsafe LLM output handling"
+  full_description: "Identifies direct LLM output usage in HTML, SQL, or other sensitive contexts"
+  help_uri: "https://docs.tavoai.com/rules/owasp-llm02-basic"
+  tags: ["security", "owasp-llm", "output-handling"]

@@ -1,0 +1,332 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tavoai.com/schemas/sarif-mapping-v1.0.json",
+  "title": "TavoAI SARIF Mapping Schema",
+  "description": "JSON Schema for mapping TavoAI rules to SARIF 2.1.0 output format",
+  "type": "object",
+  "required": ["sarif_version", "runs"],
+  "properties": {
+    "sarif_version": {
+      "type": "string",
+      "enum": ["2.1.0"],
+      "description": "SARIF specification version supported"
+    },
+    "runs": {
+      "type": "array",
+      "description": "SARIF run configurations",
+      "items": {
+        "type": "object",
+        "required": ["tool", "results"],
+        "properties": {
+          "tool": {
+            "type": "object",
+            "required": ["driver"],
+            "properties": {
+              "driver": {
+                "type": "object",
+                "required": ["name", "version", "rules"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "enum": ["TavoAI Scanner"],
+                    "description": "Tool name for SARIF output"
+                  },
+                  "version": {
+                    "type": "string",
+                    "pattern": "^\\d+\\.\\d+\\.\\d+$",
+                    "description": "Tool version"
+                  },
+                  "informationUri": {
+                    "type": "string",
+                    "format": "uri",
+                    "default": "https://tavoai.com",
+                    "description": "Tool homepage"
+                  },
+                  "rules": {
+                    "type": "array",
+                    "description": "SARIF rule definitions",
+                    "items": {
+                      "type": "object",
+                      "required": ["id", "name", "shortDescription"],
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "pattern": "^tavoai-[a-z0-9-]+[a-z0-9]$",
+                          "description": "Unique rule identifier"
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Human-readable rule name"
+                        },
+                        "shortDescription": {
+                          "type": "object",
+                          "required": ["text"],
+                          "properties": {
+                            "text": {
+                              "type": "string",
+                              "maxLength": 200,
+                              "description": "Brief rule description"
+                            }
+                          }
+                        },
+                        "fullDescription": {
+                          "type": "object",
+                          "properties": {
+                            "text": {
+                              "type": "string",
+                              "maxLength": 1000,
+                              "description": "Detailed rule description"
+                            }
+                          }
+                        },
+                        "helpUri": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "Documentation link"
+                        },
+                        "help": {
+                          "type": "object",
+                          "properties": {
+                            "text": {
+                              "type": "string",
+                              "description": "Help text with remediation guidance"
+                            },
+                            "markdown": {
+                              "type": "string",
+                              "description": "Markdown-formatted help text"
+                            }
+                          }
+                        },
+                        "properties": {
+                          "type": "object",
+                          "description": "Custom properties for rule metadata",
+                          "properties": {
+                            "tags": {
+                              "type": "array",
+                              "items": { "type": "string" },
+                              "description": "Rule tags for categorization"
+                            },
+                            "category": {
+                              "type": "string",
+                              "description": "Rule category"
+                            },
+                            "subcategory": {
+                              "type": "string",
+                              "description": "Rule subcategory"
+                            },
+                            "severity": {
+                              "type": "string",
+                              "enum": ["low", "medium", "high", "critical"],
+                              "description": "Rule severity"
+                            },
+                            "standards": {
+                              "type": "object",
+                              "description": "Standard mappings",
+                              "properties": {
+                                "cwe": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "pattern": "^CWE-\\d+$"
+                                  }
+                                },
+                                "capec": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "pattern": "^CAPEC-\\d+$"
+                                  }
+                                },
+                                "owasp_llm": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "pattern": "^LLM\\d{2}$"
+                                  }
+                                },
+                                "iso_42001": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "pattern": "^\\d+\\.\\d+(\\.\\d+)?$"
+                                  }
+                                },
+                                "nist_ai_rmf": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "pattern": "^[A-Z]+-\\d+\\.\\d+$"
+                                  }
+                                },
+                                "mit_ai_risk": {
+                                  "type": "array",
+                                  "items": { "type": "string" }
+                                }
+                              }
+                            },
+                            "confidence": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1,
+                              "description": "Rule confidence score"
+                            },
+                            "rule_type": {
+                              "type": "string",
+                              "enum": ["opengrep", "opa", "hybrid", "ai-only"],
+                              "description": "Rule execution type"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "results": {
+            "type": "array",
+            "description": "SARIF result objects",
+            "items": {
+              "type": "object",
+              "required": ["ruleId", "level", "message", "locations"],
+              "properties": {
+                "ruleId": {
+                  "type": "string",
+                  "pattern": "^tavoai-[a-z0-9-]+[a-z0-9]$",
+                  "description": "Rule that triggered this result"
+                },
+                "ruleIndex": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Index of rule in tool.driver.rules array"
+                },
+                "level": {
+                  "type": "string",
+                  "enum": ["none", "note", "warning", "error"],
+                  "description": "SARIF severity level"
+                },
+                "message": {
+                  "type": "object",
+                  "required": ["text"],
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "description": "Human-readable result message"
+                    }
+                  }
+                },
+                "locations": {
+                  "type": "array",
+                  "minItems": 1,
+                  "description": "Locations where the issue was found",
+                  "items": {
+                    "type": "object",
+                    "required": ["physicalLocation"],
+                    "properties": {
+                      "physicalLocation": {
+                        "type": "object",
+                        "required": ["artifactLocation", "region"],
+                        "properties": {
+                          "artifactLocation": {
+                            "type": "object",
+                            "required": ["uri"],
+                            "properties": {
+                              "uri": {
+                                "type": "string",
+                                "description": "File path or URI"
+                              },
+                              "uriBaseId": {
+                                "type": "string",
+                                "description": "Base URI identifier"
+                              }
+                            }
+                          },
+                          "region": {
+                            "type": "object",
+                            "description": "Location within the artifact",
+                            "properties": {
+                              "startLine": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "description": "Starting line number"
+                              },
+                              "startColumn": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "description": "Starting column number"
+                              },
+                              "endLine": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "description": "Ending line number"
+                              },
+                              "endColumn": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "description": "Ending column number"
+                              },
+                              "charOffset": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "description": "Character offset from start of artifact"
+                              },
+                              "charLength": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "description": "Length in characters"
+                              },
+                              "snippet": {
+                                "type": "object",
+                                "properties": {
+                                  "text": {
+                                    "type": "string",
+                                    "description": "Code snippet"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "properties": {
+                  "type": "object",
+                  "description": "Additional result metadata",
+                  "properties": {
+                    "confidence": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1,
+                      "description": "Finding confidence score"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": ["low", "medium", "high", "critical"],
+                      "description": "Business severity"
+                    },
+                    "category": {
+                      "type": "string",
+                      "description": "Finding category"
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": { "type": "string" },
+                      "description": "Finding tags"
+                    },
+                    "remediation": {
+                      "type": "string",
+                      "description": "Suggested fix"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

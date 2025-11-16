@@ -1,0 +1,103 @@
+version: "1.0"
+id: "tavoai-iso42001-data-governance"
+name: "ISO 42001: Data Governance and Quality"
+category: "compliance"
+subcategory: "data-governance"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-20", "CWE-502"]
+  capec: ["CAPEC-183", "CAPEC-184"]
+  owasp_llm: ["LLM03"]
+  iso_42001: ["7.3.1"]
+  nist_ai_rmf: ["MEASURE-2.1"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "google/gemini-pro"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "iso-42001"
+  - "data-governance"
+  - "data-quality"
+  - "privacy"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect data loading without validation
+      $DATA = pd.read_csv($PATH)
+      ...
+      model.fit($DATA)
+    message: "Training data loaded without quality validation"
+    severity: "medium"
+
+  - type: "opa"
+    policy: |
+      package iso42001_data_governance
+
+      deny[msg] {
+        input.code contains "train"
+        not input.code contains "validate_data"
+        not input.code contains "data_quality"
+        msg := "ISO 42001: Missing data quality validation before training"
+      }
+
+ai_analysis:
+  trigger:
+    - "heuristics_matched"
+    - "high_risk_files"
+
+  high_risk_patterns:
+    - "*/data/*"
+    - "*/training/*"
+    - "*/preprocessing/*"
+
+  prompt_template: |
+    You are an ISO 42001 data governance expert analyzing AI training data practices.
+
+    Code to analyze:
+    ```{language}
+    {code_snippet}
+    ```
+
+    File: {file_path}
+    Context: {heuristic_findings}
+
+    Analyze for ISO 42001 Section 7.3.1 compliance:
+
+    1. **Data Quality**: Are data quality checks implemented?
+    2. **Data Provenance**: Is data source and lineage tracked?
+    3. **Data Privacy**: Are privacy requirements addressed?
+    4. **Data Bias**: Are bias detection measures in place?
+    5. **Data Governance**: Are governance processes documented?
+
+    Provide compliance analysis with remediation steps.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "compliance_gaps", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      compliance_gaps: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { cwe: { type: "array", items: { type: "string" } }, capec: { type: "array", items: { type: "string" } }, iso_42001: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 2000
+  temperature: 0.1
+  cache_results: true
+  cache_duration: "7d"
+
+sarif_output:
+  rule_id: "tavoai-iso42001-data-governance"
+  rule_name: "ISO 42001 Data Governance"
+  short_description: "Validates AI data governance per ISO 42001"
+  full_description: "Checks for proper data quality, provenance, and governance practices in AI systems"
+  help_uri: "https://docs.tavoai.com/rules/iso42001-data-governance"
+  tags: ["compliance", "data-governance", "iso-42001"]

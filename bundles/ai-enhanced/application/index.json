@@ -1,0 +1,26 @@
+{
+    "name": "tavo-application-rules",
+    "version": "1.0.0",
+    "description": "Web applications, APIs, and authentication security rules",
+    "rules": [],
+    "categories": {
+        "web-security": "OWASP Top 10 web application vulnerabilities",
+        "api-security": "REST API and GraphQL security rules",
+        "auth-security": "Authentication and authorization vulnerabilities"
+    },
+    "metadata": {
+        "total_rules": 0,
+        "last_updated": "2024-10-17",
+        "languages": [
+            "python",
+            "javascript",
+            "typescript",
+            "java",
+            "csharp"
+        ],
+        "engines": [
+            "opengrep",
+            "opa"
+        ]
+    }
+}

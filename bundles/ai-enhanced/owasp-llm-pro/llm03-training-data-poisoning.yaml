@@ -1,0 +1,133 @@
+version: "1.0"
+id: "tavoai-owasp-llm03-pro"
+name: "OWASP LLM03: Training Data Poisoning (Pro)"
+category: "security"
+subcategory: "training-data"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-502", "CWE-20"]
+  capec: ["CAPEC-183", "CAPEC-184", "CAPEC-552"]
+  owasp_llm: ["LLM03"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "owasp-llm"
+  - "training-data"
+  - "ai-enhanced"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Unvalidated data loading
+      import requests
+      data = requests.get($URL).json()
+      model.fit(data)
+    message: "Unvalidated external data for model training"
+    severity: "high"
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/training/*"
+    - "*/data/*"
+    
+  prompt_template: |
+    Analyze for training data poisoning vulnerabilities:
+    Code: {code_snippet}
+    Check data validation, source verification, and poisoning prevention measures.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { owasp_llm: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-owasp-llm03-pro"
+  rule_name: "OWASP LLM03 Training Data Poisoning (Pro)"
+  short_description: "Advanced training data poisoning detection"
+  full_description: "Comprehensive analysis of training data validation and poisoning prevention"
+  help_uri: "https://docs.tavoai.com/rules/owasp-llm03-pro"
+  tags: ["security", "owasp-llm", "training-data", "ai-enhanced"]
+EOF && cat > llm04-model-denial-of-service.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-owasp-llm04-pro"
+name: "OWASP LLM04: Model Denial of Service (Pro)"
+category: "security"
+subcategory: "denial-of-service"
+severity: "medium"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-400", "CWE-770"]
+  capec: ["CAPEC-125", "CAPEC-488"]
+  owasp_llm: ["LLM04"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "owasp-llm"
+  - "denial-of-service"
+  - "ai-enhanced"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python", "javascript", "typescript"]
+    pattern: |
+      # Unbounded LLM calls
+      while $CONDITION:
+          response = llm.generate($INPUT)
+    message: "Unbounded loop with LLM calls - DoS risk"
+    severity: "medium"
+
+ai_analysis:
+  trigger:
+    - "high_risk_files"
+  high_risk_patterns:
+    - "*/api/*"
+    - "*/inference/*"
+    
+  prompt_template: |
+    Analyze for model DoS vulnerabilities:
+    Code: {code_snippet}
+    Check for resource exhaustion, unbounded operations, and DoS attack vectors.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { owasp_llm: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1500
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-owasp-llm04-pro"
+  rule_name: "OWASP LLM04 Model DoS (Pro)"
+  short_description: "Advanced model DoS vulnerability detection"
+  full_description: "Comprehensive analysis of denial-of-service attack vectors against AI models"
+  help_uri: "https://docs.tavoai.com/rules/owasp-llm04-pro"
+  tags: ["security", "owasp-llm", "denial-of-service", "ai-enhanced"]

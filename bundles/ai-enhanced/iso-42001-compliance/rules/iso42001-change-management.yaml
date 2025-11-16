@@ -1,0 +1,67 @@
+version: "1.0"
+id: "tavoai-iso42001-change-management"
+name: "ISO 42001: AI Change Management"
+category: "compliance"
+subcategory: "change-management"
+severity: "low"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-710"]
+  capec: ["CAPEC-165"]
+  owasp_llm: ["LLM05"]
+  iso_42001: ["8.4.1"]
+  nist_ai_rmf: ["DEPLOY-3.2"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "iso-42001"
+  - "change-management"
+  - "deployment"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect model updates without versioning
+      model = load_model("latest")
+      # No version control
+    message: "Model changes without proper versioning"
+    severity: "low"
+
+ai_analysis:
+  trigger:
+    - "high_risk_files"
+  high_risk_patterns:
+    - "*/deployment/*"
+    - "*/ci/*"
+    
+  prompt_template: |
+    Analyze for ISO 42001 Section 8.4.1 change management compliance.
+    Code: {code_snippet}
+    Check for version control, deployment procedures, and change tracking.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "compliance_gaps", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      compliance_gaps: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { iso_42001: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1500
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-iso42001-change-management"
+  rule_name: "ISO 42001 Change Management"
+  short_description: "Validates AI change management practices"
+  full_description: "Checks for proper change management and versioning in AI systems"
+  help_uri: "https://docs.tavoai.com/rules/iso42001-change-management"
+  tags: ["compliance", "change-management", "iso-42001"]

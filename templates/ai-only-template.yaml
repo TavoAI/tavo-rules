@@ -1,0 +1,216 @@
+# TavoAI AI-Only Rule Template
+# Copy this template to create new AI-only rules (no heuristics)
+# Fill in the placeholders marked with TODO
+# NOTE: AI-only rules require API key and are more expensive
+
+version: "1.0"
+id: "tavoai-TODO-rule-name" # TODO: Unique rule identifier
+name: "TODO: Human-readable rule name" # TODO: Descriptive name
+category: "TODO" # TODO: security | compliance | ethics | performance
+subcategory: "TODO" # TODO: Specific subcategory
+severity: "TODO" # TODO: low | medium | high | critical
+rule_type: "ai-only" # ai-only (no heuristics, pure AI analysis)
+
+# TODO: Add relevant standards mappings (see docs/cwe-capec-mapping.md)
+standards:
+  cwe: [] # TODO: CWE identifiers
+  capec: [] # TODO: CAPEC identifiers
+  owasp_llm: [] # TODO: OWASP LLM Top 10
+  iso_42001: [] # TODO: ISO 42001 sections
+  nist_ai_rmf: [] # TODO: NIST AI RMF functions
+
+# TODO: Add compatible LLM models for AI analysis (REQUIRED for AI-only)
+compatible_models:
+  - "openai/gpt-4" # TODO: Must include at least GPT-4
+  - "anthropic/claude-3-opus" # TODO: Claude recommended for complex analysis
+  - "google/gemini-pro" # TODO: Optional
+
+# TODO: Add searchable tags
+tags:
+  - "TODO-tag1"
+  - "TODO-tag2"
+  - "ai-only" # Recommended tag for AI-only rules
+
+# NO heuristics section for AI-only rules
+# AI analysis is the ONLY detection method
+
+# AI analysis phase - REQUIRED and ONLY analysis method
+ai_analysis:
+  # TODO: Define when AI analysis should run
+  trigger:
+    - "always" # TODO: AI-only rules usually run always
+    - "TODO-additional-trigger" # TODO: Or specific conditions
+
+  # TODO: Define file patterns that trigger AI analysis
+  high_risk_patterns:
+    - "*/TODO-risky-path/*" # TODO: Be specific about trigger patterns
+    - "*/TODO-another-pattern" # TODO: AI-only rules need careful triggering
+
+  # TODO: Craft comprehensive AI prompt (see docs/ai-prompt-engineering.md)
+  # AI-only prompts should be very detailed since there's no heuristic pre-filtering
+  prompt_template: |
+    You are a senior TODO_DOMAIN expert with deep knowledge of TODO_TECHNOLOGY.
+    You specialize in identifying TODO_VULNERABILITY_TYPE issues that are difficult
+    to detect with traditional pattern matching.
+
+    SECURITY AUDIT: Comprehensive TODO_VULNERABILITY_TYPE Analysis
+
+    Target Code:
+    ```{language}
+    {code_snippet}
+    ```
+
+    Analysis Context:
+    - File: {file_path}
+    - Language: {language}
+    - Line: {line_number}
+    - Project type: TODO_PROJECT_TYPE
+
+    ANALYSIS FRAMEWORK:
+
+    1. **Code Understanding**:
+       - What is this code trying to accomplish?
+       - What are the security boundaries and assumptions?
+       - Are there any implicit trust relationships?
+
+    2. **TODO_DOMAIN Analysis**:
+       TODO: Add specific analysis steps for your domain
+       - Point 1: TODO
+       - Point 2: TODO
+       - Point 3: TODO
+
+    3. **Vulnerability Assessment**:
+       - What could go wrong in this implementation?
+       - What are the potential attack vectors?
+       - How severe would successful exploitation be?
+
+    4. **Standards Compliance**:
+       - Does this violate any security standards?
+       - Are there relevant CWE/CAPEC patterns?
+       - What TODO_STANDARDS does this relate to?
+
+    5. **Remediation Planning**:
+       - What specific changes are needed?
+       - Are there multiple remediation approaches?
+       - What are the trade-offs of each approach?
+
+    REQUIRED OUTPUT FORMAT:
+    Provide your analysis using this exact structure:
+
+    {
+      "severity": "low/medium/high/critical",
+      "vulnerable_lines": [line_number1, line_number2, ...],
+      "description": "Detailed explanation of the issue, including technical details and potential impact",
+      "remediation": "Specific, actionable remediation steps with code examples if applicable",
+      "standards_mapping": {
+        "cwe": ["CWE-XXX", "CWE-YYY"],
+        "capec": ["CAPEC-XXX"],
+        "owasp_llm": ["LLMXX"],
+        "iso_42001": ["X.Y.Z"],
+        "nist_ai_rmf": ["FUNCTION-X.Y"]
+      },
+      "confidence": 0.0-1.0,
+      "additional_findings": ["Any other observations or recommendations"]
+    }
+
+    IMPORTANT:
+    - Be conservative with severity assessment
+    - Only report high-confidence findings
+    - Include specific line numbers for all issues
+    - Provide actionable remediation guidance
+    - Map to relevant security standards where applicable
+
+  # TODO: Define expected AI response format (usually more complex for AI-only)
+  expected_response_schema:
+    type: "object"
+    required:
+      [
+        "severity",
+        "vulnerable_lines",
+        "description",
+        "remediation",
+        "standards_mapping",
+        "confidence",
+      ]
+    properties:
+      severity:
+        type: "string"
+        enum: ["low", "medium", "high", "critical"]
+      vulnerable_lines:
+        type: "array"
+        items:
+          type: "number"
+        minItems: 1
+      description:
+        type: "string"
+        minLength: 100 # TODO: AI-only rules need detailed descriptions
+        maxLength: 2000
+      remediation:
+        type: "string"
+        minLength: 100 # TODO: AI-only rules need detailed remediation
+        maxLength: 2000
+      standards_mapping:
+        type: "object"
+        properties:
+          cwe:
+            type: "array"
+            items: { type: "string" }
+          capec:
+            type: "array"
+            items: { type: "string" }
+          owasp_llm:
+            type: "array"
+            items: { type: "string" }
+          iso_42001:
+            type: "array"
+            items: { type: "string" }
+          nist_ai_rmf:
+            type: "array"
+            items: { type: "string" }
+      confidence:
+        type: "number"
+        minimum: 0.7 # TODO: AI-only rules should have high confidence threshold
+        maximum: 1
+      additional_findings:
+        type: "array"
+        items: { type: "string" }
+
+# Execution configuration - Critical for AI-only rules (REQUIRED)
+execution:
+  max_tokens: 3000 # TODO: Higher token limit for complex analysis
+  temperature: 0.1 # TODO: Keep low for consistency
+  cache_results: true # TODO: Always enable caching for cost control
+  cache_duration: "7d" # TODO: Longer cache for expensive AI analysis
+  fallback_model: "openai/gpt-4" # TODO: Don't fallback to cheaper models for AI-only
+
+# SARIF output configuration - REQUIRED
+sarif_output:
+  rule_id: "tavoai-TODO-rule-name" # Must match id above
+  rule_name: "TODO: Human-readable rule name" # Must match name above
+  short_description: "TODO: Brief rule description (200 chars max)"
+  full_description: "TODO: Detailed rule description explaining what it detects and why it matters. Note: This is an AI-only rule that requires an API key for execution."
+  help_uri: "https://docs.tavoai.com/rules/TODO-rule-name" # TODO: Update with actual URL
+  tags:
+    - "TODO-category"
+    - "TODO-subcategory"
+    - "ai-only"
+# IMPORTANT NOTES FOR AI-ONLY RULES:
+#
+# 1. **Cost**: AI-only rules are expensive - use judiciously
+# 2. **Accuracy**: Without heuristics, false positives are more likely
+# 3. **Performance**: Always runs AI analysis - slower than hybrid rules
+# 4. **API Key**: Always requires API key - cannot run offline
+# 5. **Triggering**: Be very specific about when this rule should run
+#
+# Example usage scenarios for AI-only rules:
+# - Complex bias detection in ML models
+# - Intent analysis in natural language processing
+# - Architectural security review
+# - Policy compliance analysis
+# - Advanced threat modeling
+
+# Example complex code that would require AI-only analysis:
+# TODO: Add example of code that needs deep AI understanding
+#
+# This type of analysis goes beyond pattern matching and requires
+# understanding of code intent, architecture, and security implications.

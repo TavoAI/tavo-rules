@@ -1,0 +1,68 @@
+version: "1.0"
+id: "tavoai-iso42001-privacy-protection"
+name: "ISO 42001: Privacy Protection"
+category: "compliance"
+subcategory: "privacy"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-200", "CWE-359"]
+  capec: ["CAPEC-118", "CAPEC-167"]
+  owasp_llm: ["LLM06"]
+  iso_42001: ["6.3.1"]
+  nist_ai_rmf: ["MEASURE-2.4"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "iso-42001"
+  - "privacy"
+  - "data-protection"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect PII in training data
+      $DATA = load_data($PATH)
+      model.train($DATA)
+    message: "Potential PII in training data without privacy measures"
+    severity: "high"
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/data/*"
+    - "*/training/*"
+    
+  prompt_template: |
+    Analyze for ISO 42001 Section 6.3.1 privacy protection compliance.
+    Code: {code_snippet}
+    Check for data privacy, PII handling, and GDPR/AI Act compliance.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "compliance_gaps", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      compliance_gaps: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { iso_42001: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-iso42001-privacy-protection"
+  rule_name: "ISO 42001 Privacy Protection"
+  short_description: "Validates privacy protection in AI systems"
+  full_description: "Checks for proper privacy protection and data handling in AI systems"
+  help_uri: "https://docs.tavoai.com/rules/iso42001-privacy-protection"
+  tags: ["compliance", "privacy", "iso-42001"]

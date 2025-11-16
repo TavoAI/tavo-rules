@@ -1,0 +1,75 @@
+version: "1.0"
+id: "tavoai-iso42001-monitoring-logging"
+name: "ISO 42001: AI Monitoring and Logging"
+category: "compliance"
+subcategory: "monitoring"
+severity: "medium"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-778"]
+  capec: ["CAPEC-117"]
+  owasp_llm: ["LLM09"]
+  iso_42001: ["8.3.1"]
+  nist_ai_rmf: ["MONITOR-3.1"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "iso-42001"
+  - "monitoring"
+  - "logging"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect AI operations without logging
+      result = model.predict($INPUT)
+      # No logging of prediction
+    message: "AI prediction without logging/monitoring"
+    severity: "low"
+
+ai_analysis:
+  trigger:
+    - "high_risk_files"
+  high_risk_patterns:
+    - "*/inference/*"
+    - "*/api/*"
+
+  prompt_template: |
+    Analyze for ISO 42001 Section 8.3.1 monitoring and logging compliance.
+
+    Code: {code_snippet}
+    Context: {heuristic_findings}
+
+    Check for:
+    1. Input/output logging
+    2. Performance monitoring
+    3. Error tracking
+    4. Usage auditing
+    5. Drift detection
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "compliance_gaps", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      compliance_gaps: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { iso_42001: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1500
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-iso42001-monitoring-logging"
+  rule_name: "ISO 42001 Monitoring and Logging"
+  short_description: "Validates AI monitoring practices"
+  full_description: "Checks for proper monitoring and logging of AI system operations"
+  help_uri: "https://docs.tavoai.com/rules/iso42001-monitoring-logging"
+  tags: ["compliance", "monitoring", "iso-42001"]

@@ -1,0 +1,161 @@
+version: "1.0"
+id: "tavoai-iso42001-risk-management"
+name: "ISO 42001: AI Risk Management Assessment"
+category: "compliance"
+subcategory: "risk-management"
+severity: "high"
+rule_type: "hybrid"
+
+# Standard security mappings
+standards:
+  cwe: ["CWE-710"]  # Improper Adherence to Coding Standards
+  capec: ["CAPEC-100"]  # Overflow Buffers
+  owasp_llm: ["LLM05"]  # Supply Chain Vulnerabilities
+  iso_42001: ["7.2.1"]  # AI system risk assessment
+  nist_ai_rmf: ["GOVERN-1.3"]  # Risk management processes
+
+# Compatible LLM models (for AI execution)
+compatible_models:
+  - "openai/gpt-4"
+  - "google/gemini-pro"
+  - "anthropic/claude-3-opus"
+  - "tavoai/internal-llm"
+
+# Tags for discovery/search
+tags:
+  - "iso-42001"
+  - "risk-management"
+  - "compliance"
+  - "ai-governance"
+
+# Heuristics phase (runs first, fast, free)
+heuristics:
+  - type: "semgrep"
+    languages: ["python", "javascript", "typescript"]
+    pattern: |
+      # Detect ML model loading without risk assessment
+      model = load_model($PATH)
+      ...
+      $RESULT = model.predict($INPUT)
+    message: "ML model used without documented risk assessment"
+    severity: "high"
+
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect AI model deployment without risk documentation
+      from transformers import $MODEL
+      ...
+      model = $MODEL.from_pretrained($PATH)
+      ...
+      outputs = model($INPUT)
+    message: "AI model deployed without risk assessment documentation"
+    severity: "high"
+
+  - type: "opa"
+    policy: |
+      package iso42001_risk_management
+
+      # Check for missing risk documentation
+      deny[msg] {
+        input.code contains "load_model"
+        not input.code contains "risk_assessment"
+        not input.code contains "risk_documented"
+        msg := "ISO 42001: Missing AI risk assessment documentation"
+      }
+
+# AI analysis phase (requires API key, paid tier)
+ai_analysis:
+  trigger:
+    - "heuristics_matched"      # Run if heuristics found issues
+    - "high_risk_files"          # Or if file path matches risk patterns
+
+  high_risk_patterns:            # File patterns that trigger AI
+    - "*/models/*"
+    - "*/ml/*"
+    - "*/ai/*"
+    - "*/deployment/*"
+
+  prompt_template: |
+    You are an ISO 42001 compliance expert analyzing AI system risk management.
+    You have extensive experience in AI governance and risk assessment frameworks.
+
+    Code to analyze:
+    ```{language}
+    {code_snippet}
+    ```
+
+    File: {file_path}
+    Line: {line_number}
+    Context: {heuristic_findings}
+
+    Analyze this code for ISO 42001 compliance regarding AI risk management:
+
+    1. **Risk Assessment**: Is there evidence of formal risk assessment for this AI system?
+    2. **Documentation**: Are risks documented per ISO 42001 Section 7.2.1 requirements?
+    3. **Risk Mitigation**: Are risk mitigation strategies implemented in the code?
+    4. **Monitoring**: Are ongoing risk monitoring mechanisms in place?
+    5. **Stakeholder Communication**: Is risk information communicated appropriately?
+
+    Evaluate compliance with these ISO 42001 requirements:
+    - Risk identification and assessment procedures
+    - Risk treatment and mitigation plans
+    - Risk monitoring and review processes
+    - Risk communication with stakeholders
+    - Integration with organizational risk management
+
+    Provide detailed analysis with:
+    - Severity: low/medium/high/critical based on compliance gaps
+    - Vulnerable lines: specific line numbers with issues
+    - Compliance gaps: specific ISO 42001 requirements missed
+    - Remediation: concrete steps to achieve compliance
+    - Standards mapping: CWE, CAPEC, ISO 42001 sections
+    - Confidence: 0.0-1.0 score based on evidence
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "compliance_gaps", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity:
+        type: "string"
+        enum: ["low", "medium", "high", "critical"]
+      vulnerable_lines:
+        type: "array"
+        items:
+          type: "number"
+      compliance_gaps:
+        type: "string"
+        minLength: 100
+      remediation:
+        type: "string"
+        minLength: 100
+      standards_mapping:
+        type: "object"
+        properties:
+          cwe: { type: "array", items: { type: "string" } }
+          capec: { type: "array", items: { type: "string" } }
+          iso_42001: { type: "array", items: { type: "string" } }
+      confidence:
+        type: "number"
+        minimum: 0
+        maximum: 1
+
+# Execution configuration (cost optimization)
+execution:
+  max_tokens: 2000
+  temperature: 0.1
+  cache_results: true
+  cache_duration: "7d"
+  fallback_model: "openai/gpt-3.5-turbo"
+
+# SARIF output configuration
+sarif_output:
+  rule_id: "tavoai-iso42001-risk-management"
+  rule_name: "ISO 42001 AI Risk Management"
+  short_description: "Detects missing AI risk assessments per ISO 42001"
+  full_description: "Comprehensive ISO 42001 compliance check for AI system risk management documentation and implementation"
+  help_uri: "https://docs.tavoai.com/rules/iso42001-risk-management"
+  tags:
+  - "security"
+  - "compliance"
+  - "iso-42001"

@@ -1,0 +1,68 @@
+version: "1.0"
+id: "tavoai-iso42001-incident-response"
+name: "ISO 42001: AI Incident Response"
+category: "compliance"
+subcategory: "incident-response"
+severity: "medium"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-390", "CWE-391"]
+  capec: ["CAPEC-165"]
+  owasp_llm: ["LLM04"]
+  iso_42001: ["8.5.1"]
+  nist_ai_rmf: ["RECOVER-3.1"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "iso-42001"
+  - "incident-response"
+  - "error-handling"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      try:
+          result = model.predict($INPUT)
+      except:
+          pass  # No error handling
+    message: "AI prediction without proper error handling"
+    severity: "medium"
+
+ai_analysis:
+  trigger:
+    - "high_risk_files"
+  high_risk_patterns:
+    - "*/inference/*"
+    - "*/api/*"
+    
+  prompt_template: |
+    Analyze for ISO 42001 Section 8.5.1 incident response compliance.
+    Code: {code_snippet}
+    Check for error handling, incident detection, and response procedures.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "compliance_gaps", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      compliance_gaps: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { iso_42001: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1500
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-iso42001-incident-response"
+  rule_name: "ISO 42001 Incident Response"
+  short_description: "Validates AI incident response practices"
+  full_description: "Checks for proper incident detection and response in AI systems"
+  help_uri: "https://docs.tavoai.com/rules/iso42001-incident-response"
+  tags: ["compliance", "incident-response", "iso-42001"]

@@ -1,0 +1,45 @@
+version: "1.0"
+id: "tavoai-owasp-llm06-basic"
+name: "OWASP LLM06: Sensitive Information Disclosure (Basic)"
+category: "security"
+subcategory: "information-disclosure"
+severity: "high"
+rule_type: "opengrep"
+
+standards:
+  cwe: ["CWE-200", "CWE-359"]
+  capec: ["CAPEC-118", "CAPEC-167"]
+  owasp_llm: ["LLM06"]
+
+tags:
+  - "owasp-llm"
+  - "information-disclosure"
+  - "basic"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python", "javascript", "typescript"]
+    pattern: |
+      # Logging sensitive prompts
+      console.log("Prompt: " + $PROMPT)
+      logger.info(f"User prompt: {prompt}")
+    message: "Sensitive prompt logged - information disclosure"
+    severity: "high"
+
+  - type: "opa"
+    policy: |
+      package llm06_basic
+      
+      deny[msg] {
+        input.code contains "log"
+        input.code contains "prompt"
+        msg := "Prompt logged - potential information disclosure"
+      }
+
+sarif_output:
+  rule_id: "tavoai-owasp-llm06-basic"
+  rule_name: "OWASP LLM06 Information Disclosure (Basic)"
+  short_description: "Detects basic information disclosure patterns"
+  full_description: "Identifies logging and exposure of sensitive LLM prompts and responses"
+  help_uri: "https://docs.tavoai.com/rules/owasp-llm06-basic"
+  tags: ["security", "owasp-llm", "information-disclosure"]

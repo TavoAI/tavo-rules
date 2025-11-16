@@ -1,0 +1,66 @@
+version: "1.0"
+id: "tavoai-iso42001-explainability"
+name: "ISO 42001: AI Explainability"
+category: "compliance"
+subcategory: "explainability"
+severity: "medium"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-710"]
+  capec: ["CAPEC-165"]
+  owasp_llm: ["LLM09"]
+  iso_42001: ["6.2.3"]
+  nist_ai_rmf: ["MEASURE-2.3"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "iso-42001"
+  - "explainability"
+  - "interpretability"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect black-box model usage
+      model = $FRAMEWORK.load_model($PATH)
+      result = model.predict($INPUT)
+    message: "Black-box model without explainability measures"
+    severity: "medium"
+
+ai_analysis:
+  trigger:
+    - "high_risk_files"
+  high_risk_patterns:
+    - "*/models/*"
+    
+  prompt_template: |
+    Analyze for ISO 42001 Section 6.2.3 explainability compliance.
+    Code: {code_snippet}
+    Check for explainability mechanisms, interpretability measures, and transparency.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "compliance_gaps", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      compliance_gaps: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { iso_42001: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1500
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-iso42001-explainability"
+  rule_name: "ISO 42001 Explainability"
+  short_description: "Validates AI explainability practices"
+  full_description: "Checks for proper explainability and interpretability in AI systems"
+  help_uri: "https://docs.tavoai.com/rules/iso42001-explainability"
+  tags: ["compliance", "explainability", "iso-42001"]

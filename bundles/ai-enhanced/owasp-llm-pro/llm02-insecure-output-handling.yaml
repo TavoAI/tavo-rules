@@ -1,0 +1,101 @@
+version: "1.0"
+id: "tavoai-owasp-llm02-pro"
+name: "OWASP LLM02: Insecure Output Handling (Pro)"
+category: "security"
+subcategory: "output-handling"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-79", "CWE-89", "CWE-78"]
+  capec: ["CAPEC-7", "CAPEC-66"]
+  owasp_llm: ["LLM02"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "owasp-llm"
+  - "output-handling"
+  - "ai-enhanced"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python", "javascript", "typescript"]
+    pattern: |
+      # Direct LLM output in HTML
+      $HTML = "<div>" + $LLM_OUTPUT + "</div>"
+      return $HTML
+    message: "Direct LLM output in HTML - potential XSS"
+    severity: "high"
+
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # LLM output in SQL
+      $QUERY = f"INSERT INTO logs (content) VALUES ('{$LLM_RESPONSE}')"
+      cursor.execute($QUERY)
+    message: "LLM output used in SQL query - potential injection"
+    severity: "high"
+
+  - type: "opa"
+    policy: |
+      package llm02_pro
+
+      deny[msg] {
+        input.code contains "llm"
+        input.code contains "html"
+        not input.code contains "escape"
+        not input.code contains "sanitize"
+        msg := "Unsanitized LLM output in HTML context"
+      }
+
+ai_analysis:
+  trigger:
+    - "heuristics_matched"
+    - "high_risk_files"
+
+  high_risk_patterns:
+    - "*/templates/*"
+    - "*/views/*"
+    - "*/api/*"
+
+  prompt_template: |
+    Analyze this code for insecure LLM output handling vulnerabilities:
+
+    Code: {code_snippet}
+    Context: {heuristic_findings}
+
+    Evaluate LLM output usage across different contexts:
+
+    1. **HTML/Script Injection**: Is LLM output properly escaped in HTML?
+    2. **SQL Injection**: Can LLM output compromise database queries?
+    3. **Command Injection**: Is LLM output used safely in system commands?
+    4. **File Operations**: Are LLM outputs validated for file operations?
+    5. **API Responses**: Is output properly sanitized for API consumers?
+
+    Identify specific risks and provide detailed remediation.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { cwe: { type: "array", items: { type: "string" } }, capec: { type: "array", items: { type: "string" } }, owasp_llm: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 2000
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-owasp-llm02-pro"
+  rule_name: "OWASP LLM02 Insecure Output Handling (Pro)"
+  short_description: "Advanced LLM output handling security analysis"
+  full_description: "Comprehensive analysis of how LLM outputs are handled and used in various contexts to prevent injection attacks"
+  help_uri: "https://docs.tavoai.com/rules/owasp-llm02-pro"
+  tags: ["security", "owasp-llm", "output-handling", "ai-enhanced"]

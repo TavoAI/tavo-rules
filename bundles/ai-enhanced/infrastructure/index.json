@@ -1,0 +1,26 @@
+{
+    "name": "tavo-infrastructure-rules",
+    "version": "1.0.0",
+    "description": "Cloud, container, and infrastructure security rules",
+    "rules": [],
+    "categories": {
+        "cloud-security": "AWS, Azure, GCP security configurations",
+        "container-security": "Docker, Kubernetes security rules",
+        "iac-security": "Infrastructure as Code security scanning"
+    },
+    "metadata": {
+        "total_rules": 0,
+        "last_updated": "2024-10-17",
+        "languages": [
+            "python",
+            "javascript",
+            "typescript",
+            "yaml",
+            "json"
+        ],
+        "engines": [
+            "opengrep",
+            "opa"
+        ]
+    }
+}

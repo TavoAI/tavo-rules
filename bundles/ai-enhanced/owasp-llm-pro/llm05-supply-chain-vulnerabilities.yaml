@@ -1,0 +1,133 @@
+version: "1.0"
+id: "tavoai-owasp-llm05-pro"
+name: "OWASP LLM05: Supply Chain Vulnerabilities (Pro)"
+category: "security"
+subcategory: "supply-chain"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-1395", "CWE-494"]
+  capec: ["CAPEC-439", "CAPEC-440"]
+  owasp_llm: ["LLM05"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "owasp-llm"
+  - "supply-chain"
+  - "ai-enhanced"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Unverified model loading
+      model = load_model("untrusted/model/path")
+    message: "Model loaded from unverified source"
+    severity: "high"
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/requirements.txt"
+    - "*/package.json"
+    - "*/models/*"
+    
+  prompt_template: |
+    Analyze for supply chain vulnerabilities in AI dependencies:
+    Code: {code_snippet}
+    Check model sourcing, dependency validation, and supply chain security.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { owasp_llm: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-owasp-llm05-pro"
+  rule_name: "OWASP LLM05 Supply Chain (Pro)"
+  short_description: "Advanced supply chain vulnerability analysis"
+  full_description: "Comprehensive analysis of AI supply chain risks and dependency security"
+  help_uri: "https://docs.tavoai.com/rules/owasp-llm05-pro"
+  tags: ["security", "owasp-llm", "supply-chain", "ai-enhanced"]
+EOF && cat > llm06-sensitive-information-disclosure.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-owasp-llm06-pro"
+name: "OWASP LLM06: Sensitive Information Disclosure (Pro)"
+category: "security"
+subcategory: "information-disclosure"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-200", "CWE-359"]
+  capec: ["CAPEC-118", "CAPEC-167"]
+  owasp_llm: ["LLM06"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "owasp-llm"
+  - "information-disclosure"
+  - "ai-enhanced"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python", "javascript", "typescript"]
+    pattern: |
+      # Logging prompts with sensitive data
+      logger.info(f"Prompt: {user_prompt}")
+      console.log(`User prompt: ${prompt}`)
+    message: "Prompt logged - potential information disclosure"
+    severity: "high"
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/logs/*"
+    - "*/monitoring/*"
+    
+  prompt_template: |
+    Analyze for sensitive information disclosure through AI systems:
+    Code: {code_snippet}
+    Check prompt logging, response storage, and data leakage prevention.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { owasp_llm: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-owasp-llm06-pro"
+  rule_name: "OWASP LLM06 Information Disclosure (Pro)"
+  short_description: "Advanced sensitive information disclosure analysis"
+  full_description: "Comprehensive analysis of how AI systems handle and potentially expose sensitive information"
+  help_uri: "https://docs.tavoai.com/rules/owasp-llm06-pro"
+  tags: ["security", "owasp-llm", "information-disclosure", "ai-enhanced"]

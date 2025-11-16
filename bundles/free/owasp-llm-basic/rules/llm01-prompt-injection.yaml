@@ -1,0 +1,68 @@
+version: "1.0"
+id: "tavoai-owasp-llm01-basic"
+name: "OWASP LLM01: Prompt Injection (Basic)"
+category: "security"
+subcategory: "prompt-injection"
+severity: "high"
+rule_type: "opengrep"
+
+standards:
+  cwe: ["CWE-1395", "CWE-20"]
+  capec: ["CAPEC-550", "CAPEC-137"]
+  owasp_llm: ["LLM01"]
+
+tags:
+  - "owasp-llm"
+  - "prompt-injection"
+  - "basic"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python", "javascript", "typescript"]
+    pattern: |
+      # Direct user input in prompt construction
+      prompt = "... " + $USER_INPUT + " ..."
+      $LLM.generate(prompt)
+    message: "Direct user input in LLM prompt construction - potential injection"
+    severity: "high"
+
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # F-string with user input
+      prompt = f"Tell me about {user_input}"
+      response = llm.generate(prompt)
+    message: "User input in f-string prompt - potential injection"
+    severity: "high"
+
+  - type: "semgrep"
+    languages: ["javascript", "typescript"]
+    pattern: |
+      // Template literal with user input
+      const prompt = `Tell me about ${userInput}`;
+      const response = llm.generate(prompt);
+    message: "User input in template literal prompt - potential injection"
+    severity: "high"
+
+  - type: "opa"
+    policy: |
+      package llm01_basic
+
+      deny[msg] {
+        input.code contains "prompt"
+        input.code contains "user"
+        not input.code contains "sanitize"
+        not input.code contains "escape"
+        msg := "Unescaped user input in prompt construction"
+      }
+
+sarif_output:
+  rule_id: "tavoai-owasp-llm01-basic"
+  rule_name: "OWASP LLM01 Prompt Injection (Basic)"
+  short_description: "Detects basic prompt injection patterns"
+  full_description: "Identifies direct user input concatenation in LLM prompt construction without sanitization"
+  help_uri: "https://docs.tavoai.com/rules/owasp-llm01-basic"
+  tags:
+    - "security"
+    - "owasp-llm"
+    - "prompt-injection"

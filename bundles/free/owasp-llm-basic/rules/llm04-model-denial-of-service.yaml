@@ -1,0 +1,46 @@
+version: "1.0"
+id: "tavoai-owasp-llm04-basic"
+name: "OWASP LLM04: Model Denial of Service (Basic)"
+category: "security"
+subcategory: "denial-of-service"
+severity: "medium"
+rule_type: "opengrep"
+
+standards:
+  cwe: ["CWE-400", "CWE-770"]
+  capec: ["CAPEC-125", "CAPEC-488"]
+  owasp_llm: ["LLM04"]
+
+tags:
+  - "owasp-llm"
+  - "denial-of-service"
+  - "basic"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python", "javascript", "typescript"]
+    pattern: |
+      # Unbounded loop with LLM
+      while true:
+          response = llm.generate($INPUT)
+    message: "Unbounded loop with LLM calls - potential DoS"
+    severity: "medium"
+
+  - type: "opa"
+    policy: |
+      package llm04_basic
+      
+      deny[msg] {
+        input.code contains "while"
+        input.code contains "llm"
+        not input.code contains "limit"
+        msg := "Unbounded LLM calls in loop"
+      }
+
+sarif_output:
+  rule_id: "tavoai-owasp-llm04-basic"
+  rule_name: "OWASP LLM04 Model DoS (Basic)"
+  short_description: "Detects basic model DoS patterns"
+  full_description: "Identifies unbounded loops and resource exhaustion attacks on LLM models"
+  help_uri: "https://docs.tavoai.com/rules/owasp-llm04-basic"
+  tags: ["security", "owasp-llm", "denial-of-service"]

@@ -1,0 +1,176 @@
+# TavoAI Hybrid Rule Template
+# Copy this template to create new hybrid (heuristic + AI) rules
+# Fill in the placeholders marked with TODO
+
+version: "1.0"
+id: "tavoai-TODO-rule-name" # TODO: Unique rule identifier
+name: "TODO: Human-readable rule name" # TODO: Descriptive name
+category: "TODO" # TODO: security | compliance | ethics | performance
+subcategory: "TODO" # TODO: Specific subcategory
+severity: "TODO" # TODO: low | medium | high | critical
+rule_type: "hybrid" # hybrid (heuristics + AI)
+
+# TODO: Add relevant standards mappings (see docs/cwe-capec-mapping.md)
+standards:
+  cwe: [] # TODO: CWE identifiers
+  capec: [] # TODO: CAPEC identifiers
+  owasp_llm: [] # TODO: OWASP LLM Top 10
+  iso_42001: [] # TODO: ISO 42001 sections
+  nist_ai_rmf: [] # TODO: NIST AI RMF functions
+
+# TODO: Add compatible LLM models for AI analysis
+compatible_models:
+  - "openai/gpt-4" # TODO: Add/remove models as needed
+  - "anthropic/claude-3-opus"
+  - "google/gemini-pro"
+
+# TODO: Add searchable tags
+tags:
+  - "TODO-tag1"
+  - "TODO-tag2"
+
+# Heuristics phase - Fast pre-filtering (REQUIRED for hybrid rules)
+heuristics:
+  # TODO: Add Semgrep patterns for initial detection
+  - type: "semgrep"
+    languages: ["TODO-language"] # TODO: python, javascript, typescript, java, go
+    pattern: |
+      # TODO: Add pattern to detect potential issues
+      # This should be a broad pattern that catches most cases
+      TODO-pattern-here
+    message: "TODO: Heuristic finding message (triggers AI analysis)"
+    severity: "TODO" # Usually medium/low for heuristics
+
+  # TODO: Add additional heuristic patterns
+  - type: "semgrep"
+    languages: ["TODO-language"]
+    pattern: |
+      # TODO: Additional pattern
+      TODO-pattern-here
+    message: "TODO: Additional heuristic message"
+    severity: "TODO"
+
+# AI analysis phase - Deep analysis (REQUIRED for hybrid rules)
+ai_analysis:
+  # TODO: Define when AI analysis should run
+  trigger:
+    - "heuristics_matched" # Run when heuristics find issues
+    - "TODO-additional-trigger" # TODO: high_risk_files, always, etc.
+
+  # TODO: Define file patterns that trigger AI analysis
+  high_risk_patterns:
+    - "*/TODO-risky-path/*" # TODO: Add specific file patterns
+    - "*/TODO-another-pattern" # TODO: Add more patterns
+
+  # TODO: Craft the AI prompt (see docs/ai-prompt-engineering.md)
+  prompt_template: |
+    You are a senior security engineer specializing in TODO_DOMAIN security.
+    You have 15+ years of experience in TODO_TECHNOLOGY security analysis.
+
+    Analyze this code for TODO_VULNERABILITY_TYPE vulnerabilities:
+
+    Code to analyze:
+    ```{language}
+    {code_snippet}
+    ```
+
+    Context:
+    - File: {file_path}
+    - Line: {line_number}
+    - Heuristic findings: {heuristic_findings}
+
+    TODO: Add specific analysis instructions here.
+    Focus on:
+    1. TODO: Analysis point 1
+    2. TODO: Analysis point 2
+    3. TODO: Analysis point 3
+
+    Provide your analysis in this exact format:
+    - Severity: low/medium/high/critical
+    - Vulnerable lines: [line numbers, e.g., [15, 16, 22]]
+    - Description: Detailed explanation of the vulnerability
+    - Remediation: Specific, actionable code fixes
+    - Standards mapping: {"cwe": ["CWE-XXX"], "capec": ["CAPEC-XXX"]}
+    - Confidence: 0.0-1.0 (your confidence in this analysis)
+
+  # TODO: Define expected AI response format
+  expected_response_schema:
+    type: "object"
+    required:
+      [
+        "severity",
+        "vulnerable_lines",
+        "description",
+        "remediation",
+        "standards_mapping",
+        "confidence",
+      ]
+    properties:
+      severity:
+        type: "string"
+        enum: ["low", "medium", "high", "critical"]
+      vulnerable_lines:
+        type: "array"
+        items:
+          type: "number"
+        minItems: 1
+      description:
+        type: "string"
+        minLength: 50
+        maxLength: 1000
+      remediation:
+        type: "string"
+        minLength: 50
+        maxLength: 1000
+      standards_mapping:
+        type: "object"
+        properties:
+          cwe:
+            type: "array"
+            items: { type: "string" }
+          capec:
+            type: "array"
+            items: { type: "string" }
+          owasp_llm:
+            type: "array"
+            items: { type: "string" }
+      confidence:
+        type: "number"
+        minimum: 0
+        maximum: 1
+
+# Execution configuration - Cost optimization (OPTIONAL)
+execution:
+  max_tokens: 2000 # TODO: Adjust based on prompt length
+  temperature: 0.1 # TODO: Low for consistency, higher for creativity
+  cache_results: true # TODO: Enable result caching
+  cache_duration: "7d" # TODO: Cache duration
+  fallback_model: "openai/gpt-3.5-turbo" # TODO: Cheaper fallback model
+
+# SARIF output configuration - REQUIRED
+sarif_output:
+  rule_id: "tavoai-TODO-rule-name" # Must match id above
+  rule_name: "TODO: Human-readable rule name" # Must match name above
+  short_description: "TODO: Brief rule description (200 chars max)"
+  full_description: "TODO: Detailed rule description explaining what it detects and why it matters"
+  help_uri: "https://docs.tavoai.com/rules/TODO-rule-name" # TODO: Update with actual URL
+  tags:
+    - "TODO-category"
+    - "TODO-subcategory"
+# Example usage and expected findings
+# TODO: Add examples of code this rule should detect
+
+# Safe code examples (should NOT trigger):
+# TODO: Add safe code example
+# def safe_example():
+#     TODO: Safe implementation
+
+# Vulnerable code examples (should trigger heuristics):
+# TODO: Add vulnerable code example that heuristics catch
+# def vulnerable_example():
+#     TODO: Vulnerable implementation that heuristics detect
+
+# Complex vulnerable examples (require AI analysis):
+# TODO: Add complex example that needs AI analysis
+# def complex_vulnerable_example():
+#     TODO: Complex vulnerability that only AI can detect

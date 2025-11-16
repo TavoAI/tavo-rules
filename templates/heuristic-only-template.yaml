@@ -1,0 +1,79 @@
+# TavoAI Heuristic-Only Rule Template
+# Copy this template to create new heuristic-only rules
+# Fill in the placeholders marked with TODO
+
+version: "1.0"
+id: "tavoai-TODO-rule-name" # TODO: Unique rule identifier
+name: "TODO: Human-readable rule name" # TODO: Descriptive name
+category: "TODO" # TODO: security | compliance | ethics | performance
+subcategory: "TODO" # TODO: Specific subcategory
+severity: "TODO" # TODO: low | medium | high | critical
+rule_type: "opengrep" # opengrep | opa (heuristic-only)
+
+# TODO: Add relevant standards mappings (see docs/cwe-capec-mapping.md)
+standards:
+  cwe: [] # TODO: CWE identifiers
+  capec: [] # TODO: CAPEC identifiers
+  owasp_llm: [] # TODO: OWASP LLM Top 10
+  iso_42001: [] # TODO: ISO 42001 sections
+  nist_ai_rmf: [] # TODO: NIST AI RMF functions
+
+# TODO: Add searchable tags
+tags:
+  - "TODO-tag1"
+  - "TODO-tag2"
+
+# Heuristics phase - REQUIRED for heuristic-only rules
+heuristics:
+  # TODO: Add Semgrep patterns (remove if using OPA)
+  - type: "semgrep"
+    languages: ["TODO-language"] # TODO: python, javascript, typescript, java, go
+    pattern: |
+      # TODO: Add specific pattern to detect the vulnerability
+      # Example: Detect direct user input in SQL queries
+      $QUERY = "SELECT * FROM users WHERE id = '" + $USER_INPUT + "'"
+    message: "TODO: Human-readable finding message"
+    severity: "TODO" # TODO: low | medium | high | critical
+
+  # TODO: Add additional Semgrep patterns or replace with OPA
+  - type: "semgrep"
+    languages: ["TODO-language"]
+    pattern: |
+      # TODO: Additional pattern
+      TODO-pattern-here
+    message: "TODO: Additional finding message"
+    severity: "TODO"
+
+  # TODO: Alternative - use OPA policy instead of Semgrep
+  # - type: "opa"
+  #   policy: |
+  #     package TODO_package_name
+  #
+  #     deny[msg] {
+  #       TODO: OPA policy logic here
+  #       msg := "TODO: OPA finding message"
+  #     }
+
+# SARIF output configuration - REQUIRED
+sarif_output:
+  rule_id: "tavoai-TODO-rule-name" # Must match id above
+  rule_name: "TODO: Human-readable rule name" # Must match name above
+  short_description: "TODO: Brief rule description (200 chars max)"
+  full_description: "TODO: Detailed rule description explaining what it detects and why it matters"
+  help_uri: "https://docs.tavoai.com/rules/TODO-rule-name" # TODO: Update with actual URL
+  tags:
+    - "TODO-category"
+    - "TODO-subcategory"
+# Example usage and expected findings
+# TODO: Add examples of code this rule should detect
+
+# Safe code examples (should NOT trigger):
+# def safe_example(user_id):
+#     # Parameterized query - safe
+#     cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
+
+# Vulnerable code examples (should trigger):
+# def vulnerable_example(user_id):
+#     # String concatenation - vulnerable
+#     query = f"SELECT * FROM users WHERE id = '{user_id}'"
+#     cursor.execute(query)

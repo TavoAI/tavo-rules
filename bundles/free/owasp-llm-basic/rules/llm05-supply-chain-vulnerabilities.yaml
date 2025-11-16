@@ -1,0 +1,138 @@
+version: "1.0"
+id: "tavoai-owasp-llm05-basic"
+name: "OWASP LLM05: Supply Chain Vulnerabilities (Basic)"
+category: "security"
+subcategory: "supply-chain"
+severity: "high"
+rule_type: "opengrep"
+
+standards:
+  cwe: ["CWE-1395", "CWE-494"]
+  capec: ["CAPEC-439", "CAPEC-440"]
+  owasp_llm: ["LLM05"]
+
+tags:
+  - "owasp-llm"
+  - "supply-chain"
+  - "basic"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Unverified model loading
+      model = load_model("untrusted/source")
+    message: "Model loaded from unverified source"
+    severity: "high"
+
+  - type: "opa"
+    policy: |
+      package llm05_basic
+      
+      deny[msg] {
+        input.code contains "load_model"
+        not input.code contains "verify"
+        not input.code contains "trusted"
+        msg := "Unverified model loading"
+      }
+
+sarif_output:
+  rule_id: "tavoai-owasp-llm05-basic"
+  rule_name: "OWASP LLM05 Supply Chain (Basic)"
+  short_description: "Detects basic supply chain vulnerabilities"
+  full_description: "Identifies unverified model sources and supply chain risks"
+  help_uri: "https://docs.tavoai.com/rules/owasp-llm05-basic"
+  tags: ["security", "owasp-llm", "supply-chain"]
+EOF && cat > llm06-sensitive-information-disclosure.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-owasp-llm06-basic"
+name: "OWASP LLM06: Sensitive Information Disclosure (Basic)"
+category: "security"
+subcategory: "information-disclosure"
+severity: "high"
+rule_type: "opengrep"
+
+standards:
+  cwe: ["CWE-200", "CWE-359"]
+  capec: ["CAPEC-118", "CAPEC-167"]
+  owasp_llm: ["LLM06"]
+
+tags:
+  - "owasp-llm"
+  - "information-disclosure"
+  - "basic"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python", "javascript", "typescript"]
+    pattern: |
+      # Logging sensitive prompts
+      console.log("Prompt: " + $PROMPT)
+      logger.info(f"User prompt: {prompt}")
+    message: "Sensitive prompt logged - information disclosure"
+    severity: "high"
+
+  - type: "opa"
+    policy: |
+      package llm06_basic
+      
+      deny[msg] {
+        input.code contains "log"
+        input.code contains "prompt"
+        msg := "Prompt logged - potential information disclosure"
+      }
+
+sarif_output:
+  rule_id: "tavoai-owasp-llm06-basic"
+  rule_name: "OWASP LLM06 Information Disclosure (Basic)"
+  short_description: "Detects basic information disclosure patterns"
+  full_description: "Identifies logging and exposure of sensitive LLM prompts and responses"
+  help_uri: "https://docs.tavoai.com/rules/owasp-llm06-basic"
+  tags: ["security", "owasp-llm", "information-disclosure"]
+EOF && cat > llm07-insecure-plugin-design.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-owasp-llm07-basic"
+name: "OWASP LLM07: Insecure Plugin Design (Basic)"
+category: "security"
+subcategory: "plugin-design"
+severity: "medium"
+rule_type: "opengrep"
+
+standards:
+  cwe: ["CWE-284", "CWE-862"]
+  capec: ["CAPEC-17", "CAPEC-36"]
+  owasp_llm: ["LLM07"]
+
+tags:
+  - "owasp-llm"
+  - "plugin-design"
+  - "basic"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python", "javascript", "typescript"]
+    pattern: |
+      # Plugin without permission check
+      def plugin_function(user_input):
+          execute_code(user_input)  # No permission validation
+    message: "Plugin function without permission checks"
+    severity: "medium"
+
+  - type: "opa"
+    policy: |
+      package llm07_basic
+      
+      deny[msg] {
+        input.code contains "plugin"
+        not input.code contains "permission"
+        not input.code contains "auth"
+        msg := "Plugin without permission validation"
+      }
+
+sarif_output:
+  rule_id: "tavoai-owasp-llm07-basic"
+  rule_name: "OWASP LLM07 Plugin Design (Basic)"
+  short_description: "Detects basic plugin design issues"
+  full_description: "Identifies insecure plugin architectures and missing permission checks"
+  help_uri: "https://docs.tavoai.com/rules/owasp-llm07-basic"
+  tags: ["security", "owasp-llm", "plugin-design"]

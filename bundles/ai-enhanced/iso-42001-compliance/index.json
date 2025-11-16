@@ -1,0 +1,24 @@
+{
+    "name": "tavo-compliance-rules",
+    "version": "1.0.0",
+    "description": "Regulatory compliance rules (ISO 42001, SOC 2, GDPR)",
+    "rules": [],
+    "categories": {
+        "iso-42001": "ISO 42001 AI management system requirements",
+        "soc2": "SOC 2 compliance controls",
+        "gdpr": "GDPR AI and data protection requirements"
+    },
+    "metadata": {
+        "total_rules": 0,
+        "last_updated": "2024-10-17",
+        "languages": [
+            "python",
+            "javascript",
+            "typescript"
+        ],
+        "engines": [
+            "opengrep",
+            "opa"
+        ]
+    }
+}

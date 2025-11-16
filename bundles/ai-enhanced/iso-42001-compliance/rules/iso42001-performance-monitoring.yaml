@@ -1,0 +1,67 @@
+version: "1.0"
+id: "tavoai-iso42001-performance-monitoring"
+name: "ISO 42001: AI Performance Monitoring"
+category: "compliance"
+subcategory: "performance-monitoring"
+severity: "medium"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-400"]
+  capec: ["CAPEC-488"]
+  owasp_llm: ["LLM04"]
+  iso_42001: ["8.3.2"]
+  nist_ai_rmf: ["MONITOR-3.2"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "iso-42001"
+  - "performance"
+  - "monitoring"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect model usage without performance tracking
+      result = model.predict($INPUT)
+      # No performance metrics
+    message: "AI predictions without performance monitoring"
+    severity: "medium"
+
+ai_analysis:
+  trigger:
+    - "high_risk_files"
+  high_risk_patterns:
+    - "*/inference/*"
+    - "*/monitoring/*"
+    
+  prompt_template: |
+    Analyze for ISO 42001 Section 8.3.2 performance monitoring compliance.
+    Code: {code_snippet}
+    Check for performance metrics, drift detection, and ongoing monitoring.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "compliance_gaps", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      compliance_gaps: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { iso_42001: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1500
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-iso42001-performance-monitoring"
+  rule_name: "ISO 42001 Performance Monitoring"
+  short_description: "Validates AI performance monitoring"
+  full_description: "Checks for proper performance monitoring and drift detection in AI systems"
+  help_uri: "https://docs.tavoai.com/rules/iso42001-performance-monitoring"
+  tags: ["compliance", "performance", "iso-42001"]

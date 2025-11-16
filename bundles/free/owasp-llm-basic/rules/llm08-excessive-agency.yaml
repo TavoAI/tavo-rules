@@ -1,0 +1,139 @@
+version: "1.0"
+id: "tavoai-owasp-llm08-basic"
+name: "OWASP LLM08: Excessive Agency (Basic)"
+category: "security"
+subcategory: "excessive-agency"
+severity: "low"
+rule_type: "opengrep"
+
+standards:
+  cwe: ["CWE-284", "CWE-862"]
+  capec: ["CAPEC-233", "CAPEC-114"]
+  owasp_llm: ["LLM08"]
+
+tags:
+  - "owasp-llm"
+  - "excessive-agency"
+  - "basic"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python", "javascript", "typescript"]
+    pattern: |
+      # Unrestricted LLM function calls
+      llm.call_function(user_input, unlimited=true)
+    message: "LLM with unrestricted function calling"
+    severity: "low"
+
+  - type: "opa"
+    policy: |
+      package llm08_basic
+      
+      deny[msg] {
+        input.code contains "llm"
+        input.code contains "unlimited"
+        msg := "Excessive agency - unlimited LLM permissions"
+      }
+
+sarif_output:
+  rule_id: "tavoai-owasp-llm08-basic"
+  rule_name: "OWASP LLM08 Excessive Agency (Basic)"
+  short_description: "Detects basic excessive agency patterns"
+  full_description: "Identifies unrestricted LLM permissions and excessive autonomy"
+  help_uri: "https://docs.tavoai.com/rules/owasp-llm08-basic"
+  tags: ["security", "owasp-llm", "excessive-agency"]
+EOF && cat > llm09-overreliance.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-owasp-llm09-basic"
+name: "OWASP LLM09: Overreliance (Basic)"
+category: "security"
+subcategory: "overreliance"
+severity: "low"
+rule_type: "opengrep"
+
+standards:
+  cwe: ["CWE-710", "CWE-20"]
+  capec: ["CAPEC-114", "CAPEC-183"]
+  owasp_llm: ["LLM09"]
+
+tags:
+  - "owasp-llm"
+  - "overreliance"
+  - "basic"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python", "javascript", "typescript"]
+    pattern: |
+      # Critical decision without verification
+      if llm.classify(threat) == "safe":
+          execute_critical_action()
+    message: "Critical decision based solely on LLM output"
+    severity: "low"
+
+  - type: "opa"
+    policy: |
+      package llm09_basic
+      
+      deny[msg] {
+        input.code contains "llm"
+        input.code contains "critical"
+        not input.code contains "verify"
+        msg := "Overreliance on LLM for critical decisions"
+      }
+
+sarif_output:
+  rule_id: "tavoai-owasp-llm09-basic"
+  rule_name: "OWASP LLM09 Overreliance (Basic)"
+  short_description: "Detects basic overreliance patterns"
+  full_description: "Identifies critical decisions made without human verification of LLM outputs"
+  help_uri: "https://docs.tavoai.com/rules/owasp-llm09-basic"
+  tags: ["security", "owasp-llm", "overreliance"]
+EOF && cat > llm10-model-theft.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-owasp-llm10-basic"
+name: "OWASP LLM10: Model Theft (Basic)"
+category: "security"
+subcategory: "model-theft"
+severity: "high"
+rule_type: "opengrep"
+
+standards:
+  cwe: ["CWE-200", "CWE-284"]
+  capec: ["CAPEC-167", "CAPEC-165"]
+  owasp_llm: ["LLM10"]
+
+tags:
+  - "owasp-llm"
+  - "model-theft"
+  - "basic"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python", "javascript", "typescript"]
+    pattern: |
+      # Exposed model endpoint without auth
+      @app.route('/model/download')
+      def download_model():
+          return send_file('model.pkl')  # No authentication
+    message: "Exposed model download without authentication"
+    severity: "high"
+
+  - type: "opa"
+    policy: |
+      package llm10_basic
+      
+      deny[msg] {
+        input.code contains "model"
+        input.code contains "download"
+        not input.code contains "auth"
+        msg := "Model theft vulnerability - unprotected download"
+      }
+
+sarif_output:
+  rule_id: "tavoai-owasp-llm10-basic"
+  rule_name: "OWASP LLM10 Model Theft (Basic)"
+  short_description: "Detects basic model theft patterns"
+  full_description: "Identifies unprotected model endpoints and potential theft vulnerabilities"
+  help_uri: "https://docs.tavoai.com/rules/owasp-llm10-basic"
+  tags: ["security", "owasp-llm", "model-theft"]
