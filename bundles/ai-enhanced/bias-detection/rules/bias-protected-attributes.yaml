@@ -1,0 +1,111 @@
+version: "1.0"
+id: "tavoai-bias-protected-attributes"
+name: "Bias Detection: Protected Attributes"
+category: "bias"
+subcategory: "protected-attributes"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-710", "CWE-200"]
+  capec: ["CAPEC-183", "CAPEC-167"]
+  owasp_llm: ["LLM03"]
+  iso_42001: ["6.2.2"]
+  nist_ai_rmf: ["MEASURE-2.2"]
+  mit_ai_risk: ["Distributional Risks"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "bias-detection"
+  - "protected-attributes"
+  - "discrimination"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect direct use of protected attributes
+      if user.age > 65 or user.race == "minority" or user.gender == "female":
+          # Discriminatory logic
+          decision = "deny"
+    message: "Direct use of protected attributes in decision logic"
+    severity: "high"
+
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect collection of sensitive attributes
+      user_data = {
+          "age": get_age(),
+          "race": get_race(),
+          "religion": get_religion(),
+          "gender": get_gender()
+      }
+    message: "Collection of protected attributes without justification"
+    severity: "medium"
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/data/*"
+    - "*/features/*"
+    - "*/attributes/*"
+
+  prompt_template: |
+    Analyze this AI system for protected attributes bias detection.
+
+    Code to analyze:
+    ```{language}
+    {code_snippet}
+    ```
+
+    File: {file_path}
+    Context: {heuristic_findings}
+
+    Evaluate the system for protected attributes bias:
+
+    1. **Protected Attributes Usage**: Does the system use protected attributes (race, gender, age, religion, national origin, disability, etc.)?
+    2. **Direct Discrimination**: Are protected attributes used directly in decision-making logic?
+    3. **Data Collection**: Are protected attributes being collected without legal justification?
+    4. **Proxy Variables**: Are variables that correlate with protected attributes being used?
+    5. **Legal Compliance**: Does the system comply with anti-discrimination laws (e.g., Title VII, ADA, Fair Housing Act)?
+
+    Protected attributes include:
+    - Race/Color
+    - Religion
+    - National origin
+    - Sex/Gender
+    - Age (40+)
+    - Disability
+    - Genetic information
+    - Marital status
+    - Military service
+
+    Assess whether this system avoids direct use of protected attributes.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { cwe: { type: "array", items: { type: "string" } }, capec: { type: "array", items: { type: "string" } }, owasp_llm: { type: "array", items: { type: "string" } }, iso_42001: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 2000
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-bias-protected-attributes"
+  rule_name: "Bias Detection: Protected Attributes"
+  short_description: "Detects direct use of protected attributes in AI systems"
+  full_description: "Evaluates AI systems for direct use of protected attributes that could lead to discrimination"
+  help_uri: "https://docs.tavoai.com/rules/bias-protected-attributes"
+  tags: ["bias-detection", "protected-attributes", "discrimination"]

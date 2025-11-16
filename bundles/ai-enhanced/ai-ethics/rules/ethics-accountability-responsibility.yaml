@@ -1,0 +1,390 @@
+version: "1.0"
+id: "tavoai-ethics-accountability-responsibility"
+name: "AI Ethics: Accountability and Responsibility"
+category: "ethics"
+subcategory: "accountability"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-710"]
+  capec: ["CAPEC-165"]
+  owasp_llm: ["LLM09"]
+  iso_42001: ["7.2.1"]
+  nist_ai_rmf: ["GOVERN-1.3"]
+  mit_ai_risk: ["Sociotechnical Risks"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "ai-ethics"
+  - "accountability"
+  - "responsibility"
+
+heuristics:
+  - type: "opa"
+    policy: |
+      package ethics_accountability
+      
+      deny[msg] {
+        input.code contains "deploy"
+        not input.code contains "audit"
+        not input.code contains "oversight"
+        msg := "AI deployment without accountability mechanisms"
+      }
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/deployment/*"
+    - "*/api/*"
+    
+  prompt_template: |
+    Analyze this AI system for accountability and responsibility.
+    Code: {code_snippet}
+    Context: {heuristic_findings}
+
+    Evaluate accountability mechanisms:
+    1. Decision audit trails
+    2. Error attribution systems
+    3. Human oversight capabilities
+    4. Responsibility assignment
+    5. Consequence management
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { iso_42001: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-ethics-accountability-responsibility"
+  rule_name: "AI Ethics: Accountability and Responsibility"
+  short_description: "Evaluates AI accountability and responsibility"
+  full_description: "Assesses AI systems for accountability mechanisms and responsible deployment"
+  help_uri: "https://docs.tavoai.com/rules/ethics-accountability-responsibility"
+  tags: ["ethics", "accountability", "responsibility"]
+EOF && cat > ethics-privacy-data-protection.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-ethics-privacy-data-protection"
+name: "AI Ethics: Privacy and Data Protection"
+category: "ethics"
+subcategory: "privacy"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-200", "CWE-359"]
+  capec: ["CAPEC-118", "CAPEC-167"]
+  owasp_llm: ["LLM06"]
+  iso_42001: ["6.3.1"]
+  nist_ai_rmf: ["PROTECT-3.1"]
+  mit_ai_risk: ["Security & Privacy"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "ai-ethics"
+  - "privacy"
+  - "data-protection"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect data collection without consent
+      data = collect_user_data()
+      model.train(data)
+    message: "User data collection without privacy considerations"
+    severity: "high"
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/data/*"
+    - "*/privacy/*"
+    - "*/collection/*"
+    
+  prompt_template: |
+    Analyze this AI system for privacy and data protection.
+    Code: {code_snippet}
+    Context: {heuristic_findings}
+
+    Evaluate privacy protections:
+    1. Data minimization practices
+    2. Consent and permission management
+    3. Data retention policies
+    4. Privacy-preserving techniques
+    5. User data rights implementation
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { iso_42001: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-ethics-privacy-data-protection"
+  rule_name: "AI Ethics: Privacy and Data Protection"
+  short_description: "Evaluates AI privacy and data protection"
+  full_description: "Assesses AI systems for privacy protection and data handling ethics"
+  help_uri: "https://docs.tavoai.com/rules/ethics-privacy-data-protection"
+  tags: ["ethics", "privacy", "data-protection"]
+EOF && cat > ethics-human-oversight-control.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-ethics-human-oversight-control"
+name: "AI Ethics: Human Oversight and Control"
+category: "ethics"
+subcategory: "human-oversight"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-284", "CWE-862"]
+  capec: ["CAPEC-17", "CAPEC-36"]
+  owasp_llm: ["LLM08"]
+  iso_42001: ["8.2.3"]
+  nist_ai_rmf: ["VALIDATE-2.3"]
+  mit_ai_risk: ["Human-Computer Interaction"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "ai-ethics"
+  - "human-oversight"
+  - "control"
+
+heuristics:
+  - type: "opa"
+    policy: |
+      package ethics_human_oversight
+      
+      deny[msg] {
+        input.code contains "autonomous"
+        not input.code contains "human_override"
+        not input.code contains "supervision"
+        msg := "Autonomous AI without human oversight mechanisms"
+      }
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/autonomous/*"
+    - "*/automation/*"
+    
+  prompt_template: |
+    Analyze this AI system for human oversight and control.
+    Code: {code_snippet}
+    Context: {heuristic_findings}
+
+    Evaluate human oversight mechanisms:
+    1. Human-in-the-loop capabilities
+    2. Override and intervention mechanisms
+    3. Supervisory control systems
+    4. Human-AI interaction design
+    5. Authority and responsibility assignment
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { iso_42001: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-ethics-human-oversight-control"
+  rule_name: "AI Ethics: Human Oversight and Control"
+  short_description: "Evaluates human oversight in AI systems"
+  full_description: "Assesses AI systems for human oversight, control, and intervention capabilities"
+  help_uri: "https://docs.tavoai.com/rules/ethics-human-oversight-control"
+  tags: ["ethics", "human-oversight", "control"]
+EOF && cat > ethics-environmental-sustainability.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-ethics-environmental-sustainability"
+name: "AI Ethics: Environmental Sustainability"
+category: "ethics"
+subcategory: "sustainability"
+severity: "medium"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-710"]
+  capec: ["CAPEC-165"]
+  owasp_llm: ["LLM09"]
+  iso_42001: ["6.2.2"]
+  nist_ai_rmf: ["MEASURE-2.2"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "ai-ethics"
+  - "environmental"
+  - "sustainability"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect resource-intensive training
+      model = train_large_model($DATA)
+      # No consideration of environmental impact
+    message: "Resource-intensive AI training without sustainability considerations"
+    severity: "medium"
+
+ai_analysis:
+  trigger:
+    - "high_risk_files"
+  high_risk_patterns:
+    - "*/training/*"
+    - "*/deployment/*"
+    - "*/infrastructure/*"
+    
+  prompt_template: |
+    Analyze this AI system for environmental sustainability.
+    Code: {code_snippet}
+    Context: {heuristic_findings}
+
+    Evaluate environmental impact:
+    1. Energy consumption optimization
+    2. Carbon footprint assessment
+    3. Resource efficiency measures
+    4. Hardware utilization optimization
+    5. Sustainable deployment practices
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { iso_42001: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1500
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-ethics-environmental-sustainability"
+  rule_name: "AI Ethics: Environmental Sustainability"
+  short_description: "Evaluates AI environmental sustainability"
+  full_description: "Assesses AI systems for environmental impact and sustainability practices"
+  help_uri: "https://docs.tavoai.com/rules/ethics-environmental-sustainability"
+  tags: ["ethics", "environmental", "sustainability"]
+EOF && cat > ethics-societal-well-being.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-ethics-societal-well-being"
+name: "AI Ethics: Societal Well-being"
+category: "ethics"
+subcategory: "societal-well-being"
+severity: "medium"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-710"]
+  capec: ["CAPEC-165"]
+  owasp_llm: ["LLM09"]
+  iso_42001: ["7.7.1"]
+  nist_ai_rmf: ["GOVERN-1.4"]
+  mit_ai_risk: ["Sociotechnical Risks"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "ai-ethics"
+  - "societal"
+  - "well-being"
+
+heuristics:
+  - type: "opa"
+    policy: |
+      package ethics_societal_wellbeing
+      
+      deny[msg] {
+        input.code contains "deploy"
+        not input.code contains "impact_assessment"
+        not input.code contains "societal_benefit"
+        msg := "AI deployment without societal impact assessment"
+      }
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/deployment/*"
+    - "*/application/*"
+    
+  prompt_template: |
+    Analyze this AI system for societal well-being impact.
+    Code: {code_snippet}
+    Context: {heuristic_findings}
+
+    Evaluate societal impact:
+    1. Social benefit assessment
+    2. Inequality exacerbation potential
+    3. Community impact evaluation
+    4. Long-term societal consequences
+    5. Public good alignment
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { iso_42001: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-ethics-societal-well-being"
+  rule_name: "AI Ethics: Societal Well-being"
+  short_description: "Evaluates AI impact on societal well-being"
+  full_description: "Assesses AI systems for societal impact and public good alignment"
+  help_uri: "https://docs.tavoai.com/rules/ethics-societal-well-being"
+  tags: ["ethics", "societal", "well-being"]

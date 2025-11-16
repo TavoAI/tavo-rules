@@ -1,0 +1,100 @@
+version: "1.0"
+id: "tavoai-ethics-fairness-non-discrimination"
+name: "AI Ethics: Fairness and Non-Discrimination"
+category: "ethics"
+subcategory: "fairness"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-710"]
+  capec: ["CAPEC-183"]
+  owasp_llm: ["LLM03"]
+  iso_42001: ["6.2.2"]
+  nist_ai_rmf: ["MEASURE-2.2"]
+  mit_ai_risk: ["Distributional Risks"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "ai-ethics"
+  - "fairness"
+  - "non-discrimination"
+  - "bias"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect lack of fairness evaluation
+      model.fit($DATA)
+      # No fairness metrics or bias checks
+    message: "Model training without fairness evaluation"
+    severity: "high"
+
+  - type: "opa"
+    policy: |
+      package ethics_fairness
+
+      deny[msg] {
+        input.code contains "predict"
+        not input.code contains "fairness"
+        not input.code contains "bias_check"
+        msg := "Missing fairness evaluation in AI predictions"
+      }
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/training/*"
+    - "*/prediction/*"
+    - "*/inference/*"
+
+  prompt_template: |
+    Analyze this AI system for fairness and non-discrimination compliance.
+
+    Code to analyze:
+    ```{language}
+    {code_snippet}
+    ```
+
+    File: {file_path}
+    Context: {heuristic_findings}
+
+    Evaluate the AI system for fairness and non-discrimination:
+
+    1. **Bias Detection**: Does the system have mechanisms to detect and measure bias?
+    2. **Fairness Metrics**: Are fairness metrics (equal opportunity, demographic parity) implemented?
+    3. **Protected Attributes**: How does the system handle sensitive attributes (race, gender, age)?
+    4. **Disparate Impact**: Could the system create disproportionate negative impacts?
+    5. **Mitigation Strategies**: Are there bias mitigation techniques in place?
+    6. **Transparency**: Are fairness decisions and metrics transparent?
+
+    Assess whether this AI system promotes fairness and prevents discrimination.
+    Consider legal requirements (e.g., EU AI Act, US fair lending laws).
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { cwe: { type: "array", items: { type: "string" } }, capec: { type: "array", items: { type: "string" } }, owasp_llm: { type: "array", items: { type: "string" } }, iso_42001: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 2000
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-ethics-fairness-non-discrimination"
+  rule_name: "AI Ethics: Fairness and Non-Discrimination"
+  short_description: "Evaluates AI systems for fairness and non-discrimination"
+  full_description: "Assesses AI systems for bias, discrimination, and fairness compliance with ethical and legal standards"
+  help_uri: "https://docs.tavoai.com/rules/ethics-fairness-non-discrimination"
+  tags: ["ethics", "fairness", "non-discrimination", "bias"]

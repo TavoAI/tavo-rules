@@ -1,0 +1,232 @@
+version: "1.0"
+id: "tavoai-bias-training-data-bias"
+name: "Bias Detection: Training Data Bias"
+category: "bias"
+subcategory: "training-data-bias"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-20", "CWE-502"]
+  capec: ["CAPEC-183", "CAPEC-184"]
+  owasp_llm: ["LLM03"]
+  iso_42001: ["6.2.2"]
+  nist_ai_rmf: ["VALIDATE-2.1"]
+  mit_ai_risk: ["Distributional Risks"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "bias-detection"
+  - "training-data"
+  - "data-bias"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect training without data validation
+      model.fit(X_train, y_train)
+      # No data quality checks or bias assessment
+    message: "Model training without training data bias assessment"
+    severity: "high"
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/training/*"
+    - "*/data/*"
+    
+  prompt_template: |
+    Analyze training data for bias and representation issues.
+    Code: {code_snippet}
+    Context: {heuristic_findings}
+
+    Evaluate training data bias:
+    1. Demographic representation balance
+    2. Historical bias in training data
+    3. Sample selection bias
+    4. Data collection methodology bias
+    5. Temporal bias (outdated data)
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { iso_42001: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 2000
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-bias-training-data-bias"
+  rule_name: "Bias Detection: Training Data Bias"
+  short_description: "Detects bias in training data and datasets"
+  full_description: "Evaluates training data for bias, representation issues, and historical prejudices"
+  help_uri: "https://docs.tavoai.com/rules/bias-training-data-bias"
+  tags: ["bias-detection", "training-data", "data-bias"]
+EOF && cat > bias-output-fairness.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-bias-output-fairness"
+name: "Bias Detection: Output Fairness"
+category: "bias"
+subcategory: "output-fairness"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-710", "CWE-20"]
+  capec: ["CAPEC-183", "CAPEC-167"]
+  owasp_llm: ["LLM03"]
+  iso_42001: ["8.2.1"]
+  nist_ai_rmf: ["VALIDATE-2.1"]
+  mit_ai_risk: ["Distributional Risks"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "bias-detection"
+  - "output-fairness"
+  - "model-outputs"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect predictions without fairness validation
+      prediction = model.predict(input_data)
+      # No fairness checks on outputs
+    message: "Model predictions without output fairness validation"
+    severity: "high"
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/prediction/*"
+    - "*/inference/*"
+    - "*/output/*"
+    
+  prompt_template: |
+    Analyze AI model outputs for fairness and bias.
+    Code: {code_snippet}
+    Context: {heuristic_findings}
+
+    Evaluate output fairness:
+    1. Equal prediction accuracy across groups
+    2. Calibration fairness (similar error rates)
+    3. False positive/negative balance
+    4. Output distribution fairness
+    5. Decision boundary fairness
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { iso_42001: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-bias-output-fairness"
+  rule_name: "Bias Detection: Output Fairness"
+  short_description: "Detects unfairness in AI model outputs"
+  full_description: "Evaluates AI model predictions for fairness across different demographic groups"
+  help_uri: "https://docs.tavoai.com/rules/bias-output-fairness"
+  tags: ["bias-detection", "output-fairness", "model-outputs"]
+EOF && cat > bias-fairness-testing.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-bias-fairness-testing"
+name: "Bias Detection: Fairness Testing"
+category: "bias"
+subcategory: "fairness-testing"
+severity: "medium"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-20", "CWE-710"]
+  capec: ["CAPEC-183", "CAPEC-167"]
+  owasp_llm: ["LLM03"]
+  iso_42001: ["8.2.1"]
+  nist_ai_rmf: ["VALIDATE-2.1"]
+  mit_ai_risk: ["Distributional Risks"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "bias-detection"
+  - "fairness-testing"
+  - "validation"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect model deployment without fairness testing
+      model.deploy_to_production()
+      # No fairness validation or testing
+    message: "Model deployment without fairness testing and validation"
+    severity: "medium"
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/testing/*"
+    - "*/validation/*"
+    - "*/deployment/*"
+    
+  prompt_template: |
+    Analyze fairness testing and validation procedures.
+    Code: {code_snippet}
+    Context: {heuristic_findings}
+
+    Evaluate fairness testing:
+    1. Fairness metric implementation
+    2. Bias detection testing procedures
+    3. Validation across demographic groups
+    4. Ongoing monitoring and testing
+    5. Test data representativeness
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { iso_42001: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-bias-fairness-testing"
+  rule_name: "Bias Detection: Fairness Testing"
+  short_description: "Evaluates fairness testing and validation procedures"
+  full_description: "Assesses AI systems for proper fairness testing, bias validation, and ongoing monitoring"
+  help_uri: "https://docs.tavoai.com/rules/bias-fairness-testing"
+  tags: ["bias-detection", "fairness-testing", "validation"]
