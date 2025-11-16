@@ -1,0 +1,92 @@
+version: "1.0"
+id: "tavoai-mit-distributional-harm-disparities"
+name: "MIT AI Risk: Distributional Harm Disparities"
+category: "ethics"
+subcategory: "distributional-risks"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-710"]
+  capec: ["CAPEC-183"]
+  owasp_llm: ["LLM03"]
+  iso_42001: ["6.2.2"]
+  nist_ai_rmf: ["MEASURE-2.2"]
+  mit_ai_risk: ["Distributional Risks"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "mit-ai-risk"
+  - "distributional-risks"
+  - "bias"
+  - "fairness"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect model training without demographic analysis
+      model.fit($DATA)
+      # No demographic or fairness analysis
+    message: "Model training without distributional impact assessment"
+    severity: "medium"
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/training/*"
+    - "*/models/*"
+    - "*/evaluation/*"
+
+  prompt_template: |
+    Analyze this AI system for distributional harm disparities as defined in MIT AI Risk Repository.
+
+    Code to analyze:
+    ```{language}
+    {code_snippet}
+    ```
+
+    File: {file_path}
+    Context: {heuristic_findings}
+
+    Evaluate for distributional risks where AI systems create or amplify harms that are unevenly distributed across different demographic groups, socioeconomic classes, or geographic regions:
+
+    1. **Demographic Bias**: Does the system have different performance/error rates across demographic groups?
+    2. **Access Inequality**: Does the system create barriers for disadvantaged groups?
+    3. **Economic Impact**: Are economic harms disproportionately affecting vulnerable populations?
+    4. **Geographic Disparities**: Does the system work differently across geographic regions?
+
+    Consider MIT AI Risk categories:
+    - Unequal access to beneficial AI applications
+    - Disproportionate negative impacts on marginalized communities
+    - Amplification of existing social inequalities
+    - Geographic disparities in AI system performance
+
+    Provide analysis with specific evidence of distributional harms.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { mit_ai_risk: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 2000
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-distributional-harm-disparities"
+  rule_name: "MIT AI Risk: Distributional Harm Disparities"
+  short_description: "Detects AI systems that create uneven harm distribution"
+  full_description: "Evaluates AI systems for distributional risks where harms are disproportionately experienced by specific demographic or socioeconomic groups"
+  help_uri: "https://docs.tavoai.com/rules/mit-distributional-harm-disparities"
+  tags: ["ethics", "mit-ai-risk", "distributional-risks"]

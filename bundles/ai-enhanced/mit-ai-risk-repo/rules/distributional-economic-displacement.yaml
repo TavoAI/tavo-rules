@@ -1,0 +1,197 @@
+version: "1.0"
+id: "tavoai-mit-distributional-economic-displacement"
+name: "MIT AI Risk: Economic Displacement"
+category: "ethics"
+subcategory: "distributional-risks"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  mit_ai_risk: ["Distributional Risks"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "mit-ai-risk"
+  - "distributional-risks"
+  - "economic-impact"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      def automate_job($TASK):
+          ai_result = ai.process($TASK)
+          return ai_result
+    message: "Job automation without economic impact assessment"
+    severity: "high"
+
+ai_analysis:
+  trigger:
+    - "always"
+  prompt_template: |
+    Analyze for economic displacement risks from AI automation.
+    Code: {code_snippet}
+    Evaluate potential job displacement and economic inequality effects.
+
+execution:
+  max_tokens: 1500
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-distributional-economic-displacement"
+  rule_name: "MIT AI Risk: Economic Displacement"
+  short_description: "Detects AI causing economic displacement"
+  full_description: "Evaluates AI automation for disproportionate economic impacts"
+  help_uri: "https://docs.tavoai.com/rules/mit-distributional-economic-displacement"
+  tags: ["ethics", "mit-ai-risk", "distributional-risks"]
+EOF && cat > distributional-geographic-disparities.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-mit-distributional-geographic-disparities"
+name: "MIT AI Risk: Geographic Disparities"
+category: "ethics"
+subcategory: "distributional-risks"
+severity: "medium"
+rule_type: "hybrid"
+
+standards:
+  mit_ai_risk: ["Distributional Risks"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "mit-ai-risk"
+  - "distributional-risks"
+  - "geographic"
+
+heuristics:
+  - type: "opa"
+    policy: |
+      package mit_geographic
+      
+      deny[msg] {
+        input.code contains "global_deployment"
+        not input.code contains "regional_testing"
+        msg := "Global AI deployment without geographic considerations"
+      }
+
+ai_analysis:
+  trigger:
+    - "high_risk_files"
+  prompt_template: |
+    Analyze for geographic disparities in AI system performance and access.
+    Code: {code_snippet}
+    Check for regional bias and unequal service quality.
+
+execution:
+  max_tokens: 1500
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-distributional-geographic-disparities"
+  rule_name: "MIT AI Risk: Geographic Disparities"
+  short_description: "Detects geographic disparities in AI"
+  full_description: "Evaluates AI systems for unequal performance across regions"
+  help_uri: "https://docs.tavoai.com/rules/mit-distributional-geographic-disparities"
+  tags: ["ethics", "mit-ai-risk", "distributional-risks"]
+EOF && cat > malicious-use-deception-manipulation.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-mit-malicious-deception-manipulation"
+name: "MIT AI Risk: Deception and Manipulation"
+category: "ethics"
+subcategory: "malicious-use"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  mit_ai_risk: ["Malicious Use"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "mit-ai-risk"
+  - "malicious-use"
+  - "deception"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      def generate_fake_content($SOURCE):
+          fake = ai.generate_fake($SOURCE)
+          return fake
+    message: "AI-powered content manipulation capabilities"
+    severity: "high"
+
+ai_analysis:
+  trigger:
+    - "always"
+  prompt_template: |
+    Analyze for AI-powered deception and manipulation capabilities.
+    Code: {code_snippet}
+    Evaluate potential for creating convincing synthetic content.
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-malicious-deception-manipulation"
+  rule_name: "MIT AI Risk: Deception and Manipulation"
+  short_description: "Detects AI enabling deception"
+  full_description: "Evaluates AI capabilities for creating deceptive content"
+  help_uri: "https://docs.tavoai.com/rules/mit-malicious-deception-manipulation"
+  tags: ["ethics", "mit-ai-risk", "malicious-use"]
+EOF && cat > malicious-use-cyberattacks.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-mit-malicious-cyberattacks"
+name: "MIT AI Risk: AI-Enhanced Cyberattacks"
+category: "security"
+subcategory: "malicious-use"
+severity: "critical"
+rule_type: "hybrid"
+
+standards:
+  mit_ai_risk: ["Malicious Use"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "mit-ai-risk"
+  - "malicious-use"
+  - "cyberattacks"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      def automated_attack($TARGETS):
+          for target in $TARGETS:
+              exploit = ai.find_vulnerability(target)
+              attack(target, exploit)
+    message: "AI-powered automated attack systems"
+    severity: "critical"
+
+ai_analysis:
+  trigger:
+    - "always"
+  prompt_template: |
+    Analyze for AI-enhanced cyberattack capabilities.
+    Code: {code_snippet}
+    Evaluate potential for automated vulnerability discovery and exploitation.
+
+execution:
+  max_tokens: 2000
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-malicious-cyberattacks"
+  rule_name: "MIT AI Risk: AI-Enhanced Cyberattacks"
+  short_description: "Detects AI enabling cyberattacks"
+  full_description: "Evaluates AI capabilities for automated attack systems"
+  help_uri: "https://docs.tavoai.com/rules/mit-malicious-cyberattacks"
+  tags: ["security", "mit-ai-risk", "malicious-use"]

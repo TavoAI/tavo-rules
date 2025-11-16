@@ -1,0 +1,98 @@
+version: "1.0"
+id: "tavoai-mit-sociotechnical-labor-displacement"
+name: "MIT AI Risk: Labor Displacement"
+category: "ethics"
+subcategory: "sociotechnical-risks"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  mit_ai_risk: ["Sociotechnical Risks"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "mit-ai-risk"
+  - "sociotechnical"
+  - "labor"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      def automate_expert_task($TASK):
+          ai_solution = ai.solve($TASK)
+          return implement_solution(ai_solution)
+    message: "Automation of skilled human labor tasks"
+    severity: "high"
+
+ai_analysis:
+  trigger:
+    - "always"
+  prompt_template: |
+    Analyze for labor displacement risks from AI automation.
+    Code: {code_snippet}
+    Evaluate potential impacts on employment and skill requirements.
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-sociotechnical-labor-displacement"
+  rule_name: "MIT AI Risk: Labor Displacement"
+  short_description: "Detects AI causing labor displacement"
+  full_description: "Evaluates AI automation for potential employment displacement"
+  help_uri: "https://docs.tavoai.com/rules/mit-sociotechnical-labor-displacement"
+  tags: ["ethics", "mit-ai-risk", "sociotechnical-risks"]
+EOF && cat > sociotechnical-social-norms.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-mit-sociotechnical-social-norms"
+name: "MIT AI Risk: Social Norms Erosion"
+category: "ethics"
+subcategory: "sociotechnical-risks"
+severity: "medium"
+rule_type: "hybrid"
+
+standards:
+  mit_ai_risk: ["Sociotechnical Risks"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "mit-ai-risk"
+  - "sociotechnical"
+  - "social-norms"
+
+heuristics:
+  - type: "opa"
+    policy: |
+      package mit_social_norms
+      
+      deny[msg] {
+        input.code contains "personalization"
+        input.code contains "extreme"
+        msg := "Extreme personalization potentially eroding social norms"
+      }
+
+ai_analysis:
+  trigger:
+    - "high_risk_files"
+  prompt_template: |
+    Analyze for risks to social norms and shared values from AI systems.
+    Code: {code_snippet}
+    Evaluate how AI might affect social cohesion and shared understandings.
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-sociotechnical-social-norms"
+  rule_name: "MIT AI Risk: Social Norms Erosion"
+  short_description: "Detects AI eroding social norms"
+  full_description: "Evaluates AI impacts on social norms, values, and cultural understandings"
+  help_uri: "https://docs.tavoai.com/rules/mit-sociotechnical-social-norms"
+  tags: ["ethics", "mit-ai-risk", "sociotechnical-risks"]

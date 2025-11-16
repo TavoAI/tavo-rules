@@ -1,0 +1,345 @@
+version: "1.0"
+id: "tavoai-mit-malicious-deception-manipulation"
+name: "MIT AI Risk: Deception and Manipulation"
+category: "ethics"
+subcategory: "malicious-use"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  mit_ai_risk: ["Malicious Use"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "mit-ai-risk"
+  - "malicious-use"
+  - "deception"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      def generate_fake_content($SOURCE):
+          fake = ai.generate_fake($SOURCE)
+          return fake
+    message: "AI-powered content manipulation capabilities"
+    severity: "high"
+
+ai_analysis:
+  trigger:
+    - "always"
+  prompt_template: |
+    Analyze for AI-powered deception and manipulation capabilities.
+    Code: {code_snippet}
+    Evaluate potential for creating convincing synthetic content.
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-malicious-deception-manipulation"
+  rule_name: "MIT AI Risk: Deception and Manipulation"
+  short_description: "Detects AI enabling deception"
+  full_description: "Evaluates AI capabilities for creating deceptive content"
+  help_uri: "https://docs.tavoai.com/rules/mit-malicious-deception-manipulation"
+  tags: ["ethics", "mit-ai-risk", "malicious-use"]
+EOF && cat > malicious-use-cyberattacks.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-mit-malicious-cyberattacks"
+name: "MIT AI Risk: AI-Enhanced Cyberattacks"
+category: "security"
+subcategory: "malicious-use"
+severity: "critical"
+rule_type: "hybrid"
+
+standards:
+  mit_ai_risk: ["Malicious Use"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "mit-ai-risk"
+  - "malicious-use"
+  - "cyberattacks"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      def automated_attack($TARGETS):
+          for target in $TARGETS:
+              exploit = ai.find_vulnerability(target)
+              attack(target, exploit)
+    message: "AI-powered automated attack systems"
+    severity: "critical"
+
+ai_analysis:
+  trigger:
+    - "always"
+  prompt_template: |
+    Analyze for AI-enhanced cyberattack capabilities.
+    Code: {code_snippet}
+    Evaluate potential for automated vulnerability discovery and exploitation.
+
+execution:
+  max_tokens: 2000
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-malicious-cyberattacks"
+  rule_name: "MIT AI Risk: AI-Enhanced Cyberattacks"
+  short_description: "Detects AI enabling cyberattacks"
+  full_description: "Evaluates AI capabilities for automated attack systems"
+  help_uri: "https://docs.tavoai.com/rules/mit-malicious-cyberattacks"
+  tags: ["security", "mit-ai-risk", "malicious-use"]
+EOF && cat > hci-mental-health-impact.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-mit-hci-mental-health-impact"
+name: "MIT AI Risk: Mental Health Impact"
+category: "ethics"
+subcategory: "human-computer-interaction"
+severity: "medium"
+rule_type: "hybrid"
+
+standards:
+  mit_ai_risk: ["Human-Computer Interaction"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "mit-ai-risk"
+  - "hci"
+  - "mental-health"
+
+heuristics:
+  - type: "opa"
+    policy: |
+      package mit_mental_health
+      
+      deny[msg] {
+        input.code contains "addictive"
+        input.code contains "engagement"
+        msg := "Potentially addictive engagement patterns"
+      }
+
+ai_analysis:
+  trigger:
+    - "high_risk_files"
+  prompt_template: |
+    Analyze for potential mental health impacts from human-AI interaction.
+    Code: {code_snippet}
+    Evaluate interfaces and algorithms that might affect user mental health.
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-hci-mental-health-impact"
+  rule_name: "MIT AI Risk: Mental Health Impact"
+  short_description: "Detects AI interfaces affecting mental health"
+  full_description: "Evaluates human-AI interaction patterns for mental health impacts"
+  help_uri: "https://docs.tavoai.com/rules/mit-hci-mental-health-impact"
+  tags: ["ethics", "mit-ai-risk", "human-computer-interaction"]
+EOF && cat > sociotechnical-social-norms.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-mit-sociotechnical-social-norms"
+name: "MIT AI Risk: Social Norms Erosion"
+category: "ethics"
+subcategory: "sociotechnical-risks"
+severity: "medium"
+rule_type: "hybrid"
+
+standards:
+  mit_ai_risk: ["Sociotechnical Risks"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "mit-ai-risk"
+  - "sociotechnical"
+  - "social-norms"
+
+heuristics:
+  - type: "opa"
+    policy: |
+      package mit_social_norms
+      
+      deny[msg] {
+        input.code contains "personalization"
+        input.code contains "extreme"
+        msg := "Extreme personalization potentially eroding social norms"
+      }
+
+ai_analysis:
+  trigger:
+    - "high_risk_files"
+  prompt_template: |
+    Analyze for risks to social norms and shared values from AI systems.
+    Code: {code_snippet}
+    Evaluate how AI might affect social cohesion and shared understandings.
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-sociotechnical-social-norms"
+  rule_name: "MIT AI Risk: Social Norms Erosion"
+  short_description: "Detects AI eroding social norms"
+  full_description: "Evaluates AI impacts on social norms, values, and cultural understandings"
+  help_uri: "https://docs.tavoai.com/rules/mit-sociotechnical-social-norms"
+  tags: ["ethics", "mit-ai-risk", "sociotechnical-risks"]
+EOF && cat > security-privacy-adversarial-inputs.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-mit-security-privacy-adversarial-inputs"
+name: "MIT AI Risk: Adversarial Input Vulnerabilities"
+category: "security"
+subcategory: "security-privacy"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  mit_ai_risk: ["Security & Privacy"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "mit-ai-risk"
+  - "security-privacy"
+  - "adversarial"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      def process_input(raw_input):
+          return model.predict(raw_input)
+    message: "Model input processing without adversarial validation"
+    severity: "high"
+
+ai_analysis:
+  trigger:
+    - "always"
+  prompt_template: |
+    Analyze for adversarial input vulnerabilities in AI systems.
+    Code: {code_snippet}
+    Evaluate susceptibility to crafted inputs designed to fool the model.
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-security-privacy-adversarial-inputs"
+  rule_name: "MIT AI Risk: Adversarial Input Vulnerabilities"
+  short_description: "Detects adversarial input vulnerabilities"
+  full_description: "Evaluates AI systems for susceptibility to adversarial inputs"
+  help_uri: "https://docs.tavoai.com/rules/mit-security-privacy-adversarial-inputs"
+  tags: ["security", "mit-ai-risk", "security-privacy"]
+EOF && cat > failures-limitations-edge-cases.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-mit-failures-edge-cases"
+name: "MIT AI Risk: Edge Case Handling Failures"
+category: "security"
+subcategory: "failures-limitations"
+severity: "medium"
+rule_type: "hybrid"
+
+standards:
+  mit_ai_risk: ["Failures & Limitations"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "mit-ai-risk"
+  - "failures-limitations"
+  - "edge-cases"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      def process_input(data):
+          result = model.predict(data)
+          return result
+    message: "Model input processing without edge case validation"
+    severity: "medium"
+
+ai_analysis:
+  trigger:
+    - "high_risk_files"
+  prompt_template: |
+    Analyze for edge case handling failures in AI systems.
+    Code: {code_snippet}
+    Evaluate how the system handles unusual or boundary inputs.
+
+execution:
+  max_tokens: 1500
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-failures-edge-cases"
+  rule_name: "MIT AI Risk: Edge Case Handling Failures"
+  short_description: "Detects edge case handling failures"
+  full_description: "Evaluates AI systems for proper handling of edge cases"
+  help_uri: "https://docs.tavoai.com/rules/mit-failures-edge-cases"
+  tags: ["security", "mit-ai-risk", "failures-limitations"]
+EOF && cat > failures-limitations-reliability.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-mit-failures-reliability"
+name: "MIT AI Risk: AI System Reliability Issues"
+category: "security"
+subcategory: "failures-limitations"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  mit_ai_risk: ["Failures & Limitations"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "mit-ai-risk"
+  - "failures-limitations"
+  - "reliability"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      try:
+          result = model.predict(data)
+      except:
+          pass
+    message: "Model failures handled silently without proper error management"
+    severity: "high"
+
+ai_analysis:
+  trigger:
+    - "always"
+  prompt_template: |
+    Analyze for AI system reliability and failure handling issues.
+    Code: {code_snippet}
+    Evaluate robustness and failure modes of the AI system.
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-failures-reliability"
+  rule_name: "MIT AI Risk: AI System Reliability Issues"
+  short_description: "Detects AI system reliability failures"
+  full_description: "Evaluates AI systems for reliability issues and failure mode handling"
+  help_uri: "https://docs.tavoai.com/rules/mit-failures-reliability"
+  tags: ["security", "mit-ai-risk", "failures-limitations"]

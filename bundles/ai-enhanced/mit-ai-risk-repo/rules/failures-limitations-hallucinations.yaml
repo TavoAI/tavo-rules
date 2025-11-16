@@ -1,0 +1,211 @@
+version: "1.0"
+id: "tavoai-mit-failures-hallucinations"
+name: "MIT AI Risk: AI Hallucinations and Confabulations"
+category: "ethics"
+subcategory: "failures-limitations"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-20"]
+  capec: ["CAPEC-165"]
+  owasp_llm: ["LLM02"]
+  iso_42001: ["8.2.1"]
+  nist_ai_rmf: ["VALIDATE-2.1"]
+  mit_ai_risk: ["Failures & Limitations"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "mit-ai-risk"
+  - "failures-limitations"
+  - "hallucinations"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python", "javascript", "typescript"]
+    pattern: |
+      # Detect uncritical use of AI outputs
+      result = ai.generate_response($QUERY)
+      display_to_user(result)  # No validation
+    message: "Unvalidated AI outputs presented to users"
+    severity: "high"
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/generation/*"
+    - "*/response/*"
+    
+  prompt_template: |
+    Analyze for AI hallucination and confabulation risks.
+    Code: {code_snippet}
+    Evaluate how the system handles potentially incorrect or fabricated AI outputs.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { mit_ai_risk: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-failures-hallucinations"
+  rule_name: "MIT AI Risk: AI Hallucinations and Confabulations"
+  short_description: "Detects risks from AI hallucinations"
+  full_description: "Evaluates systems for proper handling of potentially incorrect or fabricated AI outputs"
+  help_uri: "https://docs.tavoai.com/rules/mit-failures-hallucinations"
+  tags: ["ethics", "mit-ai-risk", "failures-limitations"]
+EOF && cat > failures-limitations-edge-cases.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-mit-failures-edge-cases"
+name: "MIT AI Risk: Edge Case Handling Failures"
+category: "security"
+subcategory: "failures-limitations"
+severity: "medium"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-20"]
+  capec: ["CAPEC-124"]
+  owasp_llm: ["LLM04"]
+  iso_42001: ["8.2.1"]
+  nist_ai_rmf: ["VALIDATE-2.1"]
+  mit_ai_risk: ["Failures & Limitations"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "mit-ai-risk"
+  - "failures-limitations"
+  - "edge-cases"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect lack of boundary testing
+      def process_input(data):
+          result = model.predict(data)
+          return result  # No edge case handling
+    message: "Model input processing without edge case validation"
+    severity: "medium"
+
+ai_analysis:
+  trigger:
+    - "high_risk_files"
+  high_risk_patterns:
+    - "*/input/*"
+    - "*/validation/*"
+    
+  prompt_template: |
+    Analyze for edge case handling failures in AI systems.
+    Code: {code_snippet}
+    Evaluate how the system handles unusual or boundary inputs.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { mit_ai_risk: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1500
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-failures-edge-cases"
+  rule_name: "MIT AI Risk: Edge Case Handling Failures"
+  short_description: "Detects edge case handling failures"
+  full_description: "Evaluates AI systems for proper handling of edge cases and boundary conditions"
+  help_uri: "https://docs.tavoai.com/rules/mit-failures-edge-cases"
+  tags: ["security", "mit-ai-risk", "failures-limitations"]
+EOF && cat > failures-limitations-reliability.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-mit-failures-reliability"
+name: "MIT AI Risk: AI System Reliability Issues"
+category: "security"
+subcategory: "failures-limitations"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-400", "CWE-770"]
+  capec: ["CAPEC-488"]
+  owasp_llm: ["LLM04"]
+  iso_42001: ["8.3.1"]
+  nist_ai_rmf: ["MONITOR-3.1"]
+  mit_ai_risk: ["Failures & Limitations"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "mit-ai-risk"
+  - "failures-limitations"
+  - "reliability"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect lack of error handling
+      try:
+          result = model.predict(data)
+      except:
+          pass  # Silent failure
+    message: "Model failures handled silently without proper error management"
+    severity: "high"
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/error/*"
+    - "*/exception/*"
+    - "*/failure/*"
+    
+  prompt_template: |
+    Analyze for AI system reliability and failure handling issues.
+    Code: {code_snippet}
+    Evaluate robustness and failure modes of the AI system.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { mit_ai_risk: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-failures-reliability"
+  rule_name: "MIT AI Risk: AI System Reliability Issues"
+  short_description: "Detects AI system reliability failures"
+  full_description: "Evaluates AI systems for reliability issues and failure mode handling"
+  help_uri: "https://docs.tavoai.com/rules/mit-failures-reliability"
+  tags: ["security", "mit-ai-risk", "failures-limitations"]

@@ -1,0 +1,212 @@
+version: "1.0"
+id: "tavoai-mit-security-privacy-data-exfiltration"
+name: "MIT AI Risk: Data Exfiltration via AI"
+category: "security"
+subcategory: "security-privacy"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-200", "CWE-359"]
+  capec: ["CAPEC-167", "CAPEC-118"]
+  owasp_llm: ["LLM06"]
+  iso_42001: ["7.5.1"]
+  nist_ai_rmf: ["PROTECT-3.1"]
+  mit_ai_risk: ["Security & Privacy"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "mit-ai-risk"
+  - "security-privacy"
+  - "data-exfiltration"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect data encoding in model outputs
+      def encode_data_in_output($SECRET_DATA):
+          encoded = base64.encode($SECRET_DATA)
+          return f"Response: {encoded}"
+    message: "Potential data exfiltration through model outputs"
+    severity: "high"
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/encode/*"
+    - "*/steganography/*"
+    - "*/output/*"
+    
+  prompt_template: |
+    Analyze for data exfiltration risks through AI model inputs and outputs.
+    Code: {code_snippet}
+    Evaluate potential for hiding sensitive data in AI communications.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { mit_ai_risk: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-security-privacy-data-exfiltration"
+  rule_name: "MIT AI Risk: Data Exfiltration via AI"
+  short_description: "Detects data exfiltration through AI systems"
+  full_description: "Evaluates AI systems for potential use in exfiltrating sensitive data through model communications"
+  help_uri: "https://docs.tavoai.com/rules/mit-security-privacy-data-exfiltration"
+  tags: ["security", "mit-ai-risk", "security-privacy"]
+EOF && cat > security-privacy-model-inversion.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-mit-security-privacy-model-inversion"
+name: "MIT AI Risk: Model Inversion Attacks"
+category: "security"
+subcategory: "security-privacy"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-200", "CWE-359"]
+  capec: ["CAPEC-167", "CAPEC-118"]
+  owasp_llm: ["LLM06"]
+  iso_42001: ["7.5.2"]
+  nist_ai_rmf: ["PROTECT-3.2"]
+  mit_ai_risk: ["Security & Privacy"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "mit-ai-risk"
+  - "security-privacy"
+  - "model-inversion"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect model API without rate limiting
+      @app.route('/predict')
+      def predict():
+          result = model.predict(request.json)
+          return jsonify(result)
+    message: "Model API without rate limiting or access controls"
+    severity: "medium"
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/api/*"
+    - "*/inference/*"
+    
+  prompt_template: |
+    Analyze for model inversion attack vulnerabilities.
+    Code: {code_snippet}
+    Evaluate potential for reconstructing training data from model outputs.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { mit_ai_risk: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-security-privacy-model-inversion"
+  rule_name: "MIT AI Risk: Model Inversion Attacks"
+  short_description: "Detects model inversion attack vulnerabilities"
+  full_description: "Evaluates AI models for susceptibility to inversion attacks that could reconstruct training data"
+  help_uri: "https://docs.tavoai.com/rules/mit-security-privacy-model-inversion"
+  tags: ["security", "mit-ai-risk", "security-privacy"]
+EOF && cat > security-privacy-adversarial-inputs.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-mit-security-privacy-adversarial-inputs"
+name: "MIT AI Risk: Adversarial Input Vulnerabilities"
+category: "security"
+subcategory: "security-privacy"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-20", "CWE-502"]
+  capec: ["CAPEC-183", "CAPEC-184"]
+  owasp_llm: ["LLM01"]
+  iso_42001: ["8.2.1"]
+  nist_ai_rmf: ["VALIDATE-2.1"]
+  mit_ai_risk: ["Security & Privacy"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "mit-ai-risk"
+  - "security-privacy"
+  - "adversarial"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect lack of input validation
+      def process_input(raw_input):
+          return model.predict(raw_input)  # No validation
+    message: "Model input processing without adversarial validation"
+    severity: "high"
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/input/*"
+    - "*/preprocessing/*"
+    
+  prompt_template: |
+    Analyze for adversarial input vulnerabilities in AI systems.
+    Code: {code_snippet}
+    Evaluate susceptibility to crafted inputs designed to fool the model.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { mit_ai_risk: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-security-privacy-adversarial-inputs"
+  rule_name: "MIT AI Risk: Adversarial Input Vulnerabilities"
+  short_description: "Detects adversarial input attack vulnerabilities"
+  full_description: "Evaluates AI systems for susceptibility to adversarial inputs designed to manipulate model behavior"
+  help_uri: "https://docs.tavoai.com/rules/mit-security-privacy-adversarial-inputs"
+  tags: ["security", "mit-ai-risk", "security-privacy"]

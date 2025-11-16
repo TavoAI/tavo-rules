@@ -1,0 +1,215 @@
+version: "1.0"
+id: "tavoai-mit-hci-overreliance-automation"
+name: "MIT AI Risk: HCI Overreliance on Automation"
+category: "ethics"
+subcategory: "human-computer-interaction"
+severity: "medium"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-710", "CWE-20"]
+  capec: ["CAPEC-114", "CAPEC-183"]
+  owasp_llm: ["LLM09"]
+  iso_42001: ["8.2.3"]
+  nist_ai_rmf: ["VALIDATE-2.3"]
+  mit_ai_risk: ["Human-Computer Interaction"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "mit-ai-risk"
+  - "hci"
+  - "overreliance"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python", "javascript", "typescript"]
+    pattern: |
+      # Detect automated decision without human override
+      if ai_decision($INPUT):
+          execute_action($CRITICAL_ACTION)
+      # No human confirmation required
+    message: "Automated critical decision without human oversight"
+    severity: "medium"
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/automation/*"
+    - "*/decision/*"
+    - "*/interface/*"
+    
+  prompt_template: |
+    Analyze for human overreliance on AI automation and decision-making.
+    Code: {code_snippet}
+    Evaluate interfaces that might cause users to inappropriately trust AI outputs.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { mit_ai_risk: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-hci-overreliance-automation"
+  rule_name: "MIT AI Risk: HCI Overreliance on Automation"
+  short_description: "Detects interfaces causing overreliance on AI"
+  full_description: "Evaluates human-AI interfaces for potential overreliance on automated decisions"
+  help_uri: "https://docs.tavoai.com/rules/mit-hci-overreliance-automation"
+  tags: ["ethics", "mit-ai-risk", "human-computer-interaction"]
+EOF && cat > hci-misinformation-feedback.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-mit-hci-misinformation-feedback"
+name: "MIT AI Risk: Misinformation and Feedback Loops"
+category: "ethics"
+subcategory: "human-computer-interaction"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-502", "CWE-20"]
+  capec: ["CAPEC-183", "CAPEC-184"]
+  owasp_llm: ["LLM02"]
+  iso_42001: ["7.3.1"]
+  nist_ai_rmf: ["VALIDATE-2.1"]
+  mit_ai_risk: ["Human-Computer Interaction"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "mit-ai-risk"
+  - "hci"
+  - "misinformation"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect feedback loops in training data
+      user_feedback = collect_feedback()
+      training_data.append(user_feedback)
+      model.retrain(training_data)
+    message: "User feedback incorporated into training without validation"
+    severity: "high"
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/feedback/*"
+    - "*/retraining/*"
+    - "*/learning/*"
+    
+  prompt_template: |
+    Analyze for misinformation risks and harmful feedback loops in human-AI interaction.
+    Code: {code_snippet}
+    Evaluate how user interactions might create misinformation or reinforce biases.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { mit_ai_risk: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 2000
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-hci-misinformation-feedback"
+  rule_name: "MIT AI Risk: Misinformation and Feedback Loops"
+  short_description: "Detects misinformation risks in human-AI feedback"
+  full_description: "Evaluates human-AI interaction patterns that could lead to misinformation or harmful feedback loops"
+  help_uri: "https://docs.tavoai.com/rules/mit-hci-misinformation-feedback"
+  tags: ["ethics", "mit-ai-risk", "human-computer-interaction"]
+EOF && cat > hci-mental-health-impact.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-mit-hci-mental-health-impact"
+name: "MIT AI Risk: Mental Health Impact"
+category: "ethics"
+subcategory: "human-computer-interaction"
+severity: "medium"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-710"]
+  capec: ["CAPEC-165"]
+  owasp_llm: ["LLM09"]
+  iso_42001: ["6.2.3"]
+  nist_ai_rmf: ["VALIDATE-2.3"]
+  mit_ai_risk: ["Human-Computer Interaction"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "mit-ai-risk"
+  - "hci"
+  - "mental-health"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python", "javascript", "typescript"]
+    pattern: |
+      # Detect addictive interaction patterns
+      def get_personalized_content(user):
+          # Highly personalized, potentially addictive
+          return ai.generate_content(user.preferences, user.history)
+    message: "Highly personalized content that could be addictive"
+    severity: "low"
+
+ai_analysis:
+  trigger:
+    - "high_risk_files"
+  high_risk_patterns:
+    - "*/personalization/*"
+    - "*/recommendation/*"
+    - "*/engagement/*"
+    
+  prompt_template: |
+    Analyze for potential mental health impacts from human-AI interaction patterns.
+    Code: {code_snippet}
+    Evaluate interfaces and algorithms that might affect user mental health or behavior.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { mit_ai_risk: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-hci-mental-health-impact"
+  rule_name: "MIT AI Risk: Mental Health Impact"
+  short_description: "Detects AI interfaces affecting mental health"
+  full_description: "Evaluates human-AI interaction patterns for potential mental health impacts"
+  help_uri: "https://docs.tavoai.com/rules/mit-hci-mental-health-impact"
+  tags: ["ethics", "mit-ai-risk", "human-computer-interaction"]

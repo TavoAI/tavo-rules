@@ -1,0 +1,146 @@
+version: "1.0"
+id: "tavoai-mit-malicious-surveillance-tracking"
+name: "MIT AI Risk: Surveillance and Tracking"
+category: "ethics"
+subcategory: "malicious-use"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-359", "CWE-200"]
+  capec: ["CAPEC-167", "CAPEC-118"]
+  owasp_llm: ["LLM06"]
+  iso_42001: ["6.3.1"]
+  nist_ai_rmf: ["PROTECT-3.1"]
+  mit_ai_risk: ["Malicious Use"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "mit-ai-risk"
+  - "malicious-use"
+  - "surveillance"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect mass surveillance capabilities
+      def track_all_users($LOCATION_DATA):
+          for user in get_all_users():
+              location = track_location(user)
+              store_location(user, location)
+    message: "Mass surveillance and tracking capabilities"
+    severity: "high"
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/tracking/*"
+    - "*/surveillance/*"
+    - "*/monitoring/*"
+    
+  prompt_template: |
+    Analyze for mass surveillance and tracking capabilities enabled by AI.
+    Code: {code_snippet}
+    Evaluate potential for unauthorized monitoring and privacy violations.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { mit_ai_risk: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-malicious-surveillance-tracking"
+  rule_name: "MIT AI Risk: Surveillance and Tracking"
+  short_description: "Detects AI-enabled surveillance capabilities"
+  full_description: "Evaluates AI systems for potential use in unauthorized surveillance and tracking"
+  help_uri: "https://docs.tavoai.com/rules/mit-malicious-surveillance-tracking"
+  tags: ["ethics", "mit-ai-risk", "malicious-use"]
+EOF && cat > malicious-use-cyberattacks.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-mit-malicious-cyberattacks"
+name: "MIT AI Risk: AI-Enhanced Cyberattacks"
+category: "security"
+subcategory: "malicious-use"
+severity: "critical"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-284", "CWE-502"]
+  capec: ["CAPEC-550", "CAPEC-137"]
+  owasp_llm: ["LLM01"]
+  iso_42001: ["7.5.1"]
+  nist_ai_rmf: ["PROTECT-3.1"]
+  mit_ai_risk: ["Malicious Use"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "mit-ai-risk"
+  - "malicious-use"
+  - "cyberattacks"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python", "javascript", "typescript"]
+    pattern: |
+      # Detect AI-powered attack automation
+      def automated_attack($TARGETS):
+          for target in $TARGETS:
+              vulnerability = ai_analyze(target)
+              exploit = generate_exploit(vulnerability)
+              execute_attack(target, exploit)
+    message: "AI-powered automated attack capabilities"
+    severity: "critical"
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/attack/*"
+    - "*/exploit/*"
+    - "*/pentest/*"
+    
+  prompt_template: |
+    Analyze for AI-enhanced cyberattack capabilities.
+    Code: {code_snippet}
+    Evaluate potential for automated vulnerability discovery and exploitation.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { mit_ai_risk: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 2000
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-malicious-cyberattacks"
+  rule_name: "MIT AI Risk: AI-Enhanced Cyberattacks"
+  short_description: "Detects AI systems enabling cyberattacks"
+  full_description: "Evaluates AI capabilities for automated vulnerability discovery and exploitation"
+  help_uri: "https://docs.tavoai.com/rules/mit-malicious-cyberattacks"
+  tags: ["security", "mit-ai-risk", "malicious-use"]

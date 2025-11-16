@@ -1,0 +1,98 @@
+version: "1.0"
+id: "tavoai-mit-hci-misinformation-feedback"
+name: "MIT AI Risk: Misinformation and Feedback Loops"
+category: "ethics"
+subcategory: "human-computer-interaction"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  mit_ai_risk: ["Human-Computer Interaction"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "mit-ai-risk"
+  - "hci"
+  - "misinformation"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      user_feedback = collect_feedback()
+      training_data.append(user_feedback)
+      model.retrain(training_data)
+    message: "User feedback incorporated into training without validation"
+    severity: "high"
+
+ai_analysis:
+  trigger:
+    - "always"
+  prompt_template: |
+    Analyze for misinformation risks and harmful feedback loops.
+    Code: {code_snippet}
+    Evaluate how user interactions might create misinformation.
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-hci-misinformation-feedback"
+  rule_name: "MIT AI Risk: Misinformation and Feedback Loops"
+  short_description: "Detects misinformation in human-AI feedback"
+  full_description: "Evaluates human-AI interaction patterns for misinformation risks"
+  help_uri: "https://docs.tavoai.com/rules/mit-hci-misinformation-feedback"
+  tags: ["ethics", "mit-ai-risk", "human-computer-interaction"]
+EOF && cat > hci-mental-health-impact.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-mit-hci-mental-health-impact"
+name: "MIT AI Risk: Mental Health Impact"
+category: "ethics"
+subcategory: "human-computer-interaction"
+severity: "medium"
+rule_type: "hybrid"
+
+standards:
+  mit_ai_risk: ["Human-Computer Interaction"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "mit-ai-risk"
+  - "hci"
+  - "mental-health"
+
+heuristics:
+  - type: "opa"
+    policy: |
+      package mit_mental_health
+      
+      deny[msg] {
+        input.code contains "addictive"
+        input.code contains "engagement"
+        msg := "Potentially addictive engagement patterns"
+      }
+
+ai_analysis:
+  trigger:
+    - "high_risk_files"
+  prompt_template: |
+    Analyze for potential mental health impacts from human-AI interaction.
+    Code: {code_snippet}
+    Evaluate interfaces and algorithms that might affect user mental health.
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-hci-mental-health-impact"
+  rule_name: "MIT AI Risk: Mental Health Impact"
+  short_description: "Detects AI interfaces affecting mental health"
+  full_description: "Evaluates human-AI interaction patterns for mental health impacts"
+  help_uri: "https://docs.tavoai.com/rules/mit-hci-mental-health-impact"
+  tags: ["ethics", "mit-ai-risk", "human-computer-interaction"]

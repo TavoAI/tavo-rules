@@ -1,0 +1,210 @@
+version: "1.0"
+id: "tavoai-mit-distributional-access-inequality"
+name: "MIT AI Risk: Access Inequality"
+category: "ethics"
+subcategory: "distributional-risks"
+severity: "medium"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-710"]
+  capec: ["CAPEC-165"]
+  owasp_llm: ["LLM09"]
+  iso_42001: ["7.7.1"]
+  nist_ai_rmf: ["GOVERN-1.4"]
+  mit_ai_risk: ["Distributional Risks"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "mit-ai-risk"
+  - "distributional-risks"
+  - "access-equality"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect authentication without accessibility considerations
+      @app.route('/predict')
+      def predict():
+          # No accessibility checks
+          return model.predict(request.json)
+    message: "AI service without accessibility considerations"
+    severity: "low"
+
+ai_analysis:
+  trigger:
+    - "high_risk_files"
+  high_risk_patterns:
+    - "*/api/*"
+    - "*/interface/*"
+    
+  prompt_template: |
+    Analyze for access inequality risks in AI system distribution.
+    Code: {code_snippet}
+    Check for barriers that prevent equitable access to AI benefits.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { mit_ai_risk: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1500
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-distributional-access-inequality"
+  rule_name: "MIT AI Risk: Access Inequality"
+  short_description: "Detects barriers to equitable AI access"
+  full_description: "Identifies factors that prevent disadvantaged groups from accessing AI benefits"
+  help_uri: "https://docs.tavoai.com/rules/mit-distributional-access-inequality"
+  tags: ["ethics", "mit-ai-risk", "distributional-risks"]
+EOF && cat > distributional-economic-displacement.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-mit-distributional-economic-displacement"
+name: "MIT AI Risk: Economic Displacement"
+category: "ethics"
+subcategory: "distributional-risks"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-710"]
+  capec: ["CAPEC-165"]
+  owasp_llm: ["LLM09"]
+  iso_42001: ["6.2.2"]
+  nist_ai_rmf: ["MEASURE-2.2"]
+  mit_ai_risk: ["Distributional Risks"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "mit-ai-risk"
+  - "distributional-risks"
+  - "economic-impact"
+
+heuristics:
+  - type: "opa"
+    policy: |
+      package mit_distributional
+      
+      deny[msg] {
+        input.code contains "automation"
+        not input.code contains "impact_assessment"
+        msg := "Automation without economic impact assessment"
+      }
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/automation/*"
+    - "*/deployment/*"
+    
+  prompt_template: |
+    Analyze for economic displacement risks from AI automation.
+    Code: {code_snippet}
+    Evaluate potential job displacement and economic inequality effects.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { mit_ai_risk: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-distributional-economic-displacement"
+  rule_name: "MIT AI Risk: Economic Displacement"
+  short_description: "Detects AI systems causing economic displacement"
+  full_description: "Evaluates AI automation for disproportionate economic impacts on different socioeconomic groups"
+  help_uri: "https://docs.tavoai.com/rules/mit-distributional-economic-displacement"
+  tags: ["ethics", "mit-ai-risk", "distributional-risks"]
+EOF && cat > distributional-geographic-disparities.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-mit-distributional-geographic-disparities"
+name: "MIT AI Risk: Geographic Disparities"
+category: "ethics"
+subcategory: "distributional-risks"
+severity: "medium"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-710"]
+  capec: ["CAPEC-165"]
+  owasp_llm: ["LLM03"]
+  iso_42001: ["7.7.1"]
+  nist_ai_rmf: ["DEPLOY-3.1"]
+  mit_ai_risk: ["Distributional Risks"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "mit-ai-risk"
+  - "distributional-risks"
+  - "geographic"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect global deployment without regional testing
+      model.deploy($GLOBAL_CONFIG)
+      # No regional variations
+    message: "Global AI deployment without geographic considerations"
+    severity: "medium"
+
+ai_analysis:
+  trigger:
+    - "high_risk_files"
+  high_risk_patterns:
+    - "*/deployment/*"
+    - "*/config/*"
+    
+  prompt_template: |
+    Analyze for geographic disparities in AI system performance and access.
+    Code: {code_snippet}
+    Check for regional bias and unequal service quality.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { mit_ai_risk: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1500
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-distributional-geographic-disparities"
+  rule_name: "MIT AI Risk: Geographic Disparities"
+  short_description: "Detects geographic disparities in AI systems"
+  full_description: "Evaluates AI systems for unequal performance or access across geographic regions"
+  help_uri: "https://docs.tavoai.com/rules/mit-distributional-geographic-disparities"
+  tags: ["ethics", "mit-ai-risk", "distributional-risks"]

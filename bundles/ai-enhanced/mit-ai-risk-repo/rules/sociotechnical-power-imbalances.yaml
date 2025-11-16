@@ -1,0 +1,211 @@
+version: "1.0"
+id: "tavoai-mit-sociotechnical-power-imbalances"
+name: "MIT AI Risk: Power Imbalances"
+category: "ethics"
+subcategory: "sociotechnical-risks"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-710"]
+  capec: ["CAPEC-165"]
+  owasp_llm: ["LLM09"]
+  iso_42001: ["7.7.1"]
+  nist_ai_rmf: ["GOVERN-1.3"]
+  mit_ai_risk: ["Sociotechnical Risks"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "mit-ai-risk"
+  - "sociotechnical"
+  - "power-imbalances"
+
+heuristics:
+  - type: "opa"
+    policy: |
+      package mit_sociotechnical
+      
+      deny[msg] {
+        input.code contains "ai_decision"
+        input.code contains "override_human"
+        msg := "AI decisions overriding human judgment in critical areas"
+      }
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/governance/*"
+    - "*/authority/*"
+    
+  prompt_template: |
+    Analyze for sociotechnical power imbalances created by AI systems.
+    Code: {code_snippet}
+    Evaluate how AI deployment affects power dynamics between different stakeholders.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { mit_ai_risk: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-sociotechnical-power-imbalances"
+  rule_name: "MIT AI Risk: Power Imbalances"
+  short_description: "Detects AI systems creating power imbalances"
+  full_description: "Evaluates how AI systems affect power dynamics and authority structures in organizations"
+  help_uri: "https://docs.tavoai.com/rules/mit-sociotechnical-power-imbalances"
+  tags: ["ethics", "mit-ai-risk", "sociotechnical-risks"]
+EOF && cat > sociotechnical-labor-displacement.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-mit-sociotechnical-labor-displacement"
+name: "MIT AI Risk: Labor Displacement"
+category: "ethics"
+subcategory: "sociotechnical-risks"
+severity: "high"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-710"]
+  capec: ["CAPEC-165"]
+  owasp_llm: ["LLM09"]
+  iso_42001: ["6.2.2"]
+  nist_ai_rmf: ["MEASURE-2.2"]
+  mit_ai_risk: ["Sociotechnical Risks"]
+
+compatible_models:
+  - "openai/gpt-4"
+  - "anthropic/claude-3-opus"
+
+tags:
+  - "mit-ai-risk"
+  - "sociotechnical"
+  - "labor"
+
+heuristics:
+  - type: "semgrep"
+    languages: ["python"]
+    pattern: |
+      # Detect automation of skilled labor
+      def automate_expert_task($TASK):
+          ai_solution = ai.solve($TASK)
+          return implement_solution(ai_solution)
+    message: "Automation of skilled human labor tasks"
+    severity: "high"
+
+ai_analysis:
+  trigger:
+    - "always"
+  high_risk_patterns:
+    - "*/automation/*"
+    - "*/replacement/*"
+    
+  prompt_template: |
+    Analyze for labor displacement risks from AI automation.
+    Code: {code_snippet}
+    Evaluate potential impacts on employment and skill requirements.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { mit_ai_risk: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-sociotechnical-labor-displacement"
+  rule_name: "MIT AI Risk: Labor Displacement"
+  short_description: "Detects AI systems causing labor displacement"
+  full_description: "Evaluates AI automation for potential employment displacement and workforce impacts"
+  help_uri: "https://docs.tavoai.com/rules/mit-sociotechnical-labor-displacement"
+  tags: ["ethics", "mit-ai-risk", "sociotechnical-risks"]
+EOF && cat > sociotechnical-social-norms.yaml << 'EOF'
+version: "1.0"
+id: "tavoai-mit-sociotechnical-social-norms"
+name: "MIT AI Risk: Social Norms Erosion"
+category: "ethics"
+subcategory: "sociotechnical-risks"
+severity: "medium"
+rule_type: "hybrid"
+
+standards:
+  cwe: ["CWE-710"]
+  capec: ["CAPEC-165"]
+  owasp_llm: ["LLM09"]
+  iso_42001: ["7.7.1"]
+  nist_ai_rmf: ["VALIDATE-2.3"]
+  mit_ai_risk: ["Sociotechnical Risks"]
+
+compatible_models:
+  - "openai/gpt-4"
+
+tags:
+  - "mit-ai-risk"
+  - "sociotechnical"
+  - "social-norms"
+
+heuristics:
+  - type: "opa"
+    policy: |
+      package mit_social_norms
+      
+      deny[msg] {
+        input.code contains "personalization"
+        input.code contains "extreme"
+        msg := "Extreme personalization potentially eroding social norms"
+      }
+
+ai_analysis:
+  trigger:
+    - "high_risk_files"
+  high_risk_patterns:
+    - "*/personalization/*"
+    - "*/social/*"
+    
+  prompt_template: |
+    Analyze for risks to social norms and shared values from AI systems.
+    Code: {code_snippet}
+    Evaluate how AI might affect social cohesion and shared understandings.
+
+  expected_response_schema:
+    type: "object"
+    required: ["severity", "vulnerable_lines", "description", "remediation", "standards_mapping", "confidence"]
+    properties:
+      severity: { enum: ["low", "medium", "high", "critical"] }
+      vulnerable_lines: { type: "array", items: { type: "number" } }
+      description: { type: "string", minLength: 100 }
+      remediation: { type: "string", minLength: 100 }
+      standards_mapping: { type: "object", properties: { mit_ai_risk: { type: "array", items: { type: "string" } } } }
+      confidence: { type: "number", minimum: 0, maximum: 1 }
+
+execution:
+  max_tokens: 1800
+  temperature: 0.1
+
+sarif_output:
+  rule_id: "tavoai-mit-sociotechnical-social-norms"
+  rule_name: "MIT AI Risk: Social Norms Erosion"
+  short_description: "Detects AI systems eroding social norms"
+  full_description: "Evaluates AI impacts on social norms, values, and cultural understandings"
+  help_uri: "https://docs.tavoai.com/rules/mit-sociotechnical-social-norms"
+  tags: ["ethics", "mit-ai-risk", "sociotechnical-risks"]
