@@ -1,0 +1,68 @@
+{
+  "id": "bias-detection",
+  "name": "Bias Detection",
+  "description": "Bias detection rules for identifying and mitigating AI bias issues",
+  "version": "1.0.0",
+  "artifact_type": "rule_bundle",
+  "pricing_tier": "paid",
+  "author": "TavoAI Security Team",
+  "license": "MIT",
+  "homepage": "https://github.com/TavoAI/tavo-rules",
+  "documentation": "https://docs.tavoai.com/rules",
+  "created_at": "2025-11-16T06:35:59.197176Z",
+  "updated_at": "2025-11-16T06:35:59.197198Z",
+  "artifacts": [
+    "rules/bias-output-fairness.yaml",
+    "rules/bias-proxy-discrimination.yaml",
+    "rules/bias-disparate-impact.yaml",
+    "rules/bias-protected-attributes.yaml",
+    "rules/bias-training-data-bias.yaml",
+    "rules/bias-fairness-testing.yaml"
+  ],
+  "dependencies": [],
+  "tags": [
+    "bias",
+    "security",
+    "severity-high",
+    "severity-medium"
+  ],
+  "metadata": {
+    "rule_count": 6,
+    "categories": [
+      "bias",
+      "security"
+    ],
+    "severities": [
+      "high",
+      "medium"
+    ],
+    "standards": {
+      "cwe": [
+        "CWE-200",
+        "CWE-710"
+      ],
+      "capec": [
+        "CAPEC-167",
+        "CAPEC-183"
+      ],
+      "owasp_llm": [
+        "LLM03"
+      ],
+      "iso_42001": [
+        "6.2.2"
+      ],
+      "nist_ai_rmf": [
+        "MEASURE-2.2"
+      ],
+      "mit_ai_risk": [
+        "Distributional Risks"
+      ]
+    },
+    "compatible_scanners": [
+      "tavoai",
+      "semgrep",
+      "opengrep"
+    ],
+    "min_scanner_version": "1.0.0"
+  }
+}

@@ -1,0 +1,444 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "TavoAI Scanner",
+          "version": "1.0.0",
+          "informationUri": "https://tavoai.com",
+          "rules": [
+            {
+              "id": "owasp-llm-01",
+              "name": "Prompt Injection",
+              "shortDescription": {
+                "text": "Potential prompt injection vulnerability"
+              },
+              "properties": {
+                "category": "security",
+                "subcategory": "llm-security",
+                "severity": "high",
+                "confidence": 0.85,
+                "rule_type": "hybrid",
+                "tags": [
+                  "owasp-llm",
+                  "injection"
+                ],
+                "standards": {
+                  "cwe": [
+                    "CWE-77",
+                    "CWE-89"
+                  ],
+                  "capec": [
+                    "CAPEC-137"
+                  ],
+                  "owasp_llm": [
+                    "LLM01"
+                  ],
+                  "iso_42001": [
+                    "6.2.2",
+                    "8.1.3"
+                  ]
+                }
+              },
+              "help": {
+                "text": "Validate and sanitize user input before passing to LLM"
+              },
+              "helpUri": "https://owasp.org/www-project-top-10-for-large-language-model-applications/LLM01_2023-Prompt_Injection.html",
+              "relationships": [
+                {
+                  "target": {
+                    "id": "CWE-77",
+                    "toolComponent": {
+                      "name": "CWE"
+                    }
+                  },
+                  "kinds": [
+                    "relevant"
+                  ]
+                },
+                {
+                  "target": {
+                    "id": "CWE-89",
+                    "toolComponent": {
+                      "name": "CWE"
+                    }
+                  },
+                  "kinds": [
+                    "relevant"
+                  ]
+                },
+                {
+                  "target": {
+                    "id": "CAPEC-137",
+                    "toolComponent": {
+                      "name": "CAPEC"
+                    }
+                  },
+                  "kinds": [
+                    "relevant"
+                  ]
+                },
+                {
+                  "target": {
+                    "id": "LLM01",
+                    "toolComponent": {
+                      "name": "OWASP LLM Top 10"
+                    }
+                  },
+                  "kinds": [
+                    "relevant"
+                  ]
+                },
+                {
+                  "target": {
+                    "id": "ISO42001-6.2.2",
+                    "toolComponent": {
+                      "name": "ISO 42001"
+                    }
+                  },
+                  "kinds": [
+                    "relevant"
+                  ]
+                },
+                {
+                  "target": {
+                    "id": "ISO42001-8.1.3",
+                    "toolComponent": {
+                      "name": "ISO 42001"
+                    }
+                  },
+                  "kinds": [
+                    "relevant"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "iso42001-risk-mgmt",
+              "name": "ISO 42001 Risk Management",
+              "shortDescription": {
+                "text": "Missing risk assessment procedures"
+              },
+              "properties": {
+                "category": "compliance",
+                "subcategory": "iso-42001",
+                "severity": "medium",
+                "confidence": 0.78,
+                "rule_type": "hybrid",
+                "tags": [
+                  "iso-42001",
+                  "risk-management"
+                ],
+                "standards": {
+                  "iso_42001": [
+                    "6.1.1",
+                    "6.1.2",
+                    "6.1.3"
+                  ],
+                  "nist_ai_rmf": [
+                    "ID"
+                  ]
+                }
+              },
+              "help": {
+                "text": "Implement comprehensive risk assessment before deployment"
+              },
+              "relationships": [
+                {
+                  "target": {
+                    "id": "ISO42001-6.1.1",
+                    "toolComponent": {
+                      "name": "ISO 42001"
+                    }
+                  },
+                  "kinds": [
+                    "relevant"
+                  ]
+                },
+                {
+                  "target": {
+                    "id": "ISO42001-6.1.2",
+                    "toolComponent": {
+                      "name": "ISO 42001"
+                    }
+                  },
+                  "kinds": [
+                    "relevant"
+                  ]
+                },
+                {
+                  "target": {
+                    "id": "ISO42001-6.1.3",
+                    "toolComponent": {
+                      "name": "ISO 42001"
+                    }
+                  },
+                  "kinds": [
+                    "relevant"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "bias-detection-001",
+              "name": "Bias Detection - Protected Attributes",
+              "shortDescription": {
+                "text": "Potential bias in decision making"
+              },
+              "properties": {
+                "category": "ethics",
+                "subcategory": "bias-detection",
+                "severity": "medium",
+                "confidence": 0.65,
+                "rule_type": "hybrid",
+                "tags": [
+                  "bias",
+                  "fairness",
+                  "ethics"
+                ],
+                "standards": {
+                  "iso_42001": [
+                    "6.2.2"
+                  ],
+                  "cwe": [
+                    "CWE-20"
+                  ]
+                }
+              },
+              "help": {
+                "text": "Remove protected attributes from decision logic"
+              },
+              "relationships": [
+                {
+                  "target": {
+                    "id": "CWE-20",
+                    "toolComponent": {
+                      "name": "CWE"
+                    }
+                  },
+                  "kinds": [
+                    "relevant"
+                  ]
+                },
+                {
+                  "target": {
+                    "id": "ISO42001-6.2.2",
+                    "toolComponent": {
+                      "name": "ISO 42001"
+                    }
+                  },
+                  "kinds": [
+                    "relevant"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "owasp-llm-01",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "Direct user input passed to LLM without validation"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/chat.py"
+                },
+                "region": {
+                  "startLine": 42,
+                  "snippet": {
+                    "text": "response = openai.ChatCompletion.create(messages=[user_input])"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "confidence": 0.85,
+            "category": "security",
+            "severity": "high",
+            "rule_type": "hybrid",
+            "ai_analysis": {
+              "severity": "high",
+              "confidence": 0.92,
+              "tokens_used": 245,
+              "cost_usd": 0.0049
+            },
+            "remediation": "Validate and sanitize user input before passing to LLM",
+            "tags": [
+              "owasp-llm",
+              "injection"
+            ],
+            "standards": {
+              "cwe": [
+                "CWE-77",
+                "CWE-89"
+              ],
+              "capec": [
+                "CAPEC-137"
+              ],
+              "owasp_llm": [
+                "LLM01"
+              ],
+              "iso_42001": [
+                "6.2.2",
+                "8.1.3"
+              ]
+            }
+          }
+        },
+        {
+          "ruleId": "iso42001-risk-mgmt",
+          "ruleIndex": 1,
+          "level": "warning",
+          "message": {
+            "text": "AI system deployed without documented risk assessment"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "deploy.py"
+                },
+                "region": {
+                  "startLine": 15,
+                  "endLine": 25,
+                  "snippet": {
+                    "text": "model = load_model()\nstart_serving(model)"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "confidence": 0.78,
+            "category": "compliance",
+            "severity": "medium",
+            "rule_type": "hybrid",
+            "remediation": "Implement comprehensive risk assessment before deployment",
+            "tags": [
+              "iso-42001",
+              "risk-management"
+            ],
+            "standards": {
+              "iso_42001": [
+                "6.1.1",
+                "6.1.2",
+                "6.1.3"
+              ],
+              "nist_ai_rmf": [
+                "ID"
+              ]
+            }
+          }
+        },
+        {
+          "ruleId": "bias-detection-001",
+          "ruleIndex": 2,
+          "level": "warning",
+          "message": {
+            "text": "Decision logic uses protected attributes"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "ml_model.py"
+                },
+                "region": {
+                  "startLine": 78,
+                  "snippet": {
+                    "text": "if user.age > 65: return DENIED"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "confidence": 0.65,
+            "category": "ethics",
+            "severity": "medium",
+            "rule_type": "hybrid",
+            "remediation": "Remove protected attributes from decision logic",
+            "tags": [
+              "bias",
+              "fairness",
+              "ethics"
+            ],
+            "standards": {
+              "iso_42001": [
+                "6.2.2"
+              ],
+              "cwe": [
+                "CWE-20"
+              ]
+            }
+          }
+        }
+      ],
+      "automationDetails": {
+        "id": "tavoai-scan-2025-11-16T06:33:55.787930",
+        "description": {
+          "text": "Automated AI security scanning with TavoAI"
+        }
+      },
+      "taxonomies": [
+        {
+          "name": "CWE",
+          "version": "4.13",
+          "releaseDateUtc": "2023-10-01T00:00:00Z",
+          "informationUri": "https://cwe.mitre.org/",
+          "organization": "MITRE",
+          "shortDescription": {
+            "text": "Common Weakness Enumeration"
+          }
+        },
+        {
+          "name": "CAPEC",
+          "version": "3.9",
+          "releaseDateUtc": "2023-10-01T00:00:00Z",
+          "informationUri": "https://capec.mitre.org/",
+          "organization": "MITRE",
+          "shortDescription": {
+            "text": "Common Attack Pattern Enumeration and Classification"
+          }
+        },
+        {
+          "name": "OWASP LLM Top 10",
+          "version": "2024",
+          "releaseDateUtc": "2024-01-01T00:00:00Z",
+          "informationUri": "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+          "organization": "OWASP",
+          "shortDescription": {
+            "text": "OWASP Top 10 for Large Language Model Applications"
+          }
+        },
+        {
+          "name": "ISO 42001",
+          "version": "2023",
+          "releaseDateUtc": "2023-01-01T00:00:00Z",
+          "informationUri": "https://www.iso.org/standard/81232.html",
+          "organization": "ISO",
+          "shortDescription": {
+            "text": "AI Management System Standard"
+          }
+        }
+      ],
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "startTimeUtc": "2025-11-16T06:33:55.788038Z",
+          "endTimeUtc": "2025-11-16T06:33:55.788045Z"
+        }
+      ]
+    }
+  ]
+}

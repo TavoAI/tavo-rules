@@ -1,0 +1,68 @@
+{
+  "id": "ai-ethics",
+  "name": "Ai Ethics",
+  "description": "AI Ethics rules for fairness, transparency, and responsible AI development",
+  "version": "1.0.0",
+  "artifact_type": "rule_bundle",
+  "pricing_tier": "paid",
+  "author": "TavoAI Security Team",
+  "license": "MIT",
+  "homepage": "https://github.com/TavoAI/tavo-rules",
+  "documentation": "https://docs.tavoai.com/rules",
+  "created_at": "2025-11-16T06:35:59.237621Z",
+  "updated_at": "2025-11-16T06:35:59.237625Z",
+  "artifacts": [
+    "rules/ethics-environmental-sustainability.yaml",
+    "rules/ethics-fairness-non-discrimination.yaml",
+    "rules/ethics-human-oversight-control.yaml",
+    "rules/ethics-societal-well-being.yaml",
+    "rules/ethics-accountability-responsibility.yaml",
+    "rules/ethics-transparency-explainability.yaml",
+    "rules/ethics-privacy-data-protection.yaml",
+    "rules/ethics-safety-reliability.yaml"
+  ],
+  "dependencies": [],
+  "tags": [
+    "ethics",
+    "security",
+    "severity-high",
+    "severity-medium"
+  ],
+  "metadata": {
+    "rule_count": 8,
+    "categories": [
+      "ethics",
+      "security"
+    ],
+    "severities": [
+      "high",
+      "medium"
+    ],
+    "standards": {
+      "cwe": [
+        "CWE-710"
+      ],
+      "capec": [
+        "CAPEC-183"
+      ],
+      "owasp_llm": [
+        "LLM03"
+      ],
+      "iso_42001": [
+        "6.2.2"
+      ],
+      "nist_ai_rmf": [
+        "MEASURE-2.2"
+      ],
+      "mit_ai_risk": [
+        "Distributional Risks"
+      ]
+    },
+    "compatible_scanners": [
+      "tavoai",
+      "semgrep",
+      "opengrep"
+    ],
+    "min_scanner_version": "1.0.0"
+  }
+}

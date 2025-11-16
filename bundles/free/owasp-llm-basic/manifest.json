@@ -1,0 +1,83 @@
+{
+  "id": "owasp-llm-basic",
+  "name": "Owasp Llm Basic",
+  "description": "Heuristic-only OWASP LLM Top 10 rules for basic security scanning",
+  "version": "1.0.0",
+  "artifact_type": "rule_bundle",
+  "pricing_tier": "free",
+  "author": "TavoAI Security Team",
+  "license": "MIT",
+  "homepage": "https://github.com/TavoAI/tavo-rules",
+  "documentation": "https://docs.tavoai.com/rules",
+  "created_at": "2025-11-16T06:35:59.261897Z",
+  "updated_at": "2025-11-16T06:35:59.261905Z",
+  "artifacts": [
+    "rules/llm07-insecure-plugin-design.yaml",
+    "rules/llm10-model-theft.yaml",
+    "rules/llm03-training-data-poisoning.yaml",
+    "rules/llm04-model-denial-of-service.yaml",
+    "rules/llm08-excessive-agency.yaml",
+    "rules/llm02-insecure-output-handling.yaml",
+    "rules/llm05-supply-chain-vulnerabilities.yaml",
+    "rules/llm01-prompt-injection.yaml",
+    "rules/llm06-sensitive-information-disclosure.yaml",
+    "rules/llm09-overreliance.yaml"
+  ],
+  "dependencies": [],
+  "tags": [
+    "security",
+    "severity-high",
+    "severity-medium"
+  ],
+  "metadata": {
+    "rule_count": 10,
+    "categories": [
+      "security"
+    ],
+    "severities": [
+      "high",
+      "medium"
+    ],
+    "standards": {
+      "cwe": [
+        "CWE-1395",
+        "CWE-20",
+        "CWE-200",
+        "CWE-284",
+        "CWE-359",
+        "CWE-400",
+        "CWE-502",
+        "CWE-770",
+        "CWE-79",
+        "CWE-89"
+      ],
+      "capec": [
+        "CAPEC-118",
+        "CAPEC-125",
+        "CAPEC-137",
+        "CAPEC-165",
+        "CAPEC-167",
+        "CAPEC-183",
+        "CAPEC-184",
+        "CAPEC-488",
+        "CAPEC-550",
+        "CAPEC-66",
+        "CAPEC-7"
+      ],
+      "owasp_llm": [
+        "LLM01",
+        "LLM02",
+        "LLM03",
+        "LLM04",
+        "LLM06",
+        "LLM10"
+      ]
+    },
+    "compatible_scanners": [
+      "tavoai",
+      "semgrep",
+      "opengrep"
+    ],
+    "min_scanner_version": "1.0.0"
+  }
+}

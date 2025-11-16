@@ -24,19 +24,19 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 log_info() {
-    echo -e "${BLUE}ℹ️  $1${NC}"
+    echo -e "${BLUE}ℹ️  $1${NC}" >&2
 }
 
 log_success() {
-    echo -e "${GREEN}✅ $1${NC}"
+    echo -e "${GREEN}✅ $1${NC}" >&2
 }
 
 log_warning() {
-    echo -e "${YELLOW}⚠️  $1${NC}"
+    echo -e "${YELLOW}⚠️  $1${NC}" >&2
 }
 
 log_error() {
-    echo -e "${RED}❌ $1${NC}"
+    echo -e "${RED}❌ $1${NC}" >&2
 }
 
 validate_bundle() {
@@ -144,7 +144,18 @@ package_bundle() {
     local bundle_path="$OUTPUT_DIR/$bundle_filename"
 
     log_info "Creating bundle archive: $bundle_filename"
-    (cd "$temp_dir" && zip -r "$bundle_path" "bundle/" >/dev/null)
+    if (cd "$temp_dir" && zip -r "$bundle_path" "bundle/" >/dev/null 2>&1); then
+        # Verify the file was created
+        if [[ -f "$bundle_path" ]]; then
+            log_success "Bundle archive created successfully"
+        else
+            log_error "Bundle archive was not created"
+            return 1
+        fi
+    else
+        log_error "Failed to create bundle archive"
+        return 1
+    fi
 
     # Calculate bundle size
     local bundle_size
@@ -164,7 +175,7 @@ package_all_bundles() {
     log_info "Packaging all bundles..."
 
     # Find all bundle directories (those with manifest.json)
-    while IFS= read -r -d '' bundle_dir; do
+    while IFS= read -r bundle_dir; do
         local bundle_name
         bundle_name=$(basename "$bundle_dir")
         total_bundles=$((total_bundles + 1))
@@ -178,7 +189,7 @@ package_all_bundles() {
             log_error "Failed to package: $bundle_name"
         fi
 
-    done < <(find "$BUNDLES_DIR" -name "manifest.json" -exec dirname {} \; -print0)
+    done < <(find "$BUNDLES_DIR" -name "manifest.json" -exec dirname {} \;)
 
     log_info "Packaging complete: $success_count/$total_bundles bundles packaged"
 

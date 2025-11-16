@@ -1,0 +1,103 @@
+{
+  "id": "mit-ai-risk-repo",
+  "name": "Mit Ai Risk Repo",
+  "description": "MIT AI Risk Repository rules covering emerging AI safety concerns",
+  "version": "1.0.0",
+  "artifact_type": "rule_bundle",
+  "pricing_tier": "paid",
+  "author": "TavoAI Security Team",
+  "license": "MIT",
+  "homepage": "https://github.com/TavoAI/tavo-rules",
+  "documentation": "https://docs.tavoai.com/rules",
+  "created_at": "2025-11-16T06:35:59.252711Z",
+  "updated_at": "2025-11-16T06:35:59.252718Z",
+  "artifacts": [
+    "rules/security-privacy-adversarial-inputs.yaml",
+    "rules/failures-limitations-reliability.yaml",
+    "rules/sociotechnical-social-norms.yaml",
+    "rules/security-privacy-model-inversion.yaml",
+    "rules/distributional-economic-displacement.yaml",
+    "rules/hci-overreliance-automation.yaml",
+    "rules/malicious-use-surveillance-tracking.yaml",
+    "rules/security-privacy-data-exfiltration.yaml",
+    "rules/tavoai-mit-risk-R002.yaml",
+    "rules/sociotechnical-power-imbalances.yaml",
+    "rules/hci-mental-health-impact.yaml",
+    "rules/failures-limitations-edge-cases.yaml",
+    "rules/malicious-use-deception-manipulation.yaml",
+    "rules/sociotechnical-labor-displacement.yaml",
+    "rules/distributional-harm-disparities.yaml",
+    "rules/tavoai-mit-risk-R001.yaml",
+    "rules/tavoai-mit-risk-R003.yaml",
+    "rules/distributional-geographic-disparities.yaml",
+    "rules/distributional-access-inequality.yaml",
+    "rules/hci-misinformation-feedback.yaml",
+    "rules/malicious-use-weaponization.yaml",
+    "rules/malicious-use-cyberattacks.yaml",
+    "rules/failures-limitations-hallucinations.yaml"
+  ],
+  "dependencies": [],
+  "tags": [
+    "ethics",
+    "security",
+    "severity-high",
+    "severity-medium"
+  ],
+  "metadata": {
+    "rule_count": 23,
+    "categories": [
+      "ethics",
+      "security"
+    ],
+    "severities": [
+      "high",
+      "medium"
+    ],
+    "standards": {
+      "mit_ai_risk": [
+        "Distributional Risks",
+        "discrimination-and-toxicity",
+        "misinformation",
+        "privacy-and-security"
+      ],
+      "iso_42001": [
+        "6.2.2",
+        "7.3.1",
+        "7.5.1",
+        "7.5.2",
+        "7.7.1",
+        "8.2.3"
+      ],
+      "nist_ai_rmf": [
+        "MEASURE-2.2",
+        "PROTECT-3.1",
+        "PROTECT-3.2",
+        "VALIDATE-2.1",
+        "VALIDATE-2.3"
+      ],
+      "cwe": [
+        "CWE-20",
+        "CWE-200",
+        "CWE-359",
+        "CWE-502",
+        "CWE-710"
+      ],
+      "capec": [
+        "CAPEC-118",
+        "CAPEC-165",
+        "CAPEC-167",
+        "CAPEC-183",
+        "CAPEC-184"
+      ],
+      "owasp_llm": [
+        "LLM03"
+      ]
+    },
+    "compatible_scanners": [
+      "tavoai",
+      "semgrep",
+      "opengrep"
+    ],
+    "min_scanner_version": "1.0.0"
+  }
+}
