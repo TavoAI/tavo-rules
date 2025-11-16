@@ -49,7 +49,7 @@ TavoAI supports running rules from external repositories while respecting licens
 
 ### Supported External Sources
 
-- **Semgrep Rules**: https://github.com/returntocorp/semgrep-rules
+- **Semgrep Rules**: https://github.com/semgrep/semgrep-rules
 - **OPA Policies**: https://github.com/open-policy-agent/library
 - **YARA Rules**: https://github.com/Yara-Rules/rules
 - **Sigma Rules**: https://github.com/SigmaHQ/sigma
@@ -58,11 +58,11 @@ TavoAI supports running rules from external repositories while respecting licens
 
 ```bash
 # Run external semgrep rules directly
-tavoai scan --rules github:returntocorp/semgrep-rules/python --target ./code
+tavoai scan --rules github:semgrep/semgrep-rules/python --target ./code
 
 # Combine external and TavoAI rules
 tavoai scan \
-  --rules github:returntocorp/semgrep-rules \
+  --rules github:semgrep/semgrep-rules \
   --rules tavoai:ai-enhanced/owasp-llm-pro \
   --target ./code
 ```

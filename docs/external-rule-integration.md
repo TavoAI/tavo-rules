@@ -9,7 +9,7 @@ TavoAI supports running rules from external sources to provide comprehensive sec
 ## Supported External Rule Sources
 
 ### Semgrep Rules
-- **Repository**: https://github.com/returntocorp/semgrep-rules
+- **Repository**: https://github.com/semgrep/semgrep-rules
 - **License**: MIT (but redistribution restrictions apply)
 - **Integration**: Direct reference from GitHub
 - **Usage**: Customers can run semgrep rules directly from the source repository
@@ -47,7 +47,7 @@ await scanner.scan({
   rules: [
     {
       source: 'github',
-      repo: 'returntocorp/semgrep-rules',
+      repo: 'semgrep/semgrep-rules',
       path: 'python/lang/security',
       type: 'semgrep'
     }
@@ -66,7 +66,7 @@ await scanner.scan({
     // External semgrep rule
     {
       source: 'github',
-      repo: 'returntocorp/semgrep-rules',
+      repo: 'semgrep/semgrep-rules',
       path: 'python/lang/security/injection.yaml',
       type: 'semgrep'
     },
@@ -111,7 +111,7 @@ We **can**:
 #### Semgrep Rules
 - **License**: Semgrep Rules License v1.0
 - **Approach**: Direct GitHub access only
-- **Implementation**: Customers specify `github:returntocorp/semgrep-rules` in scan commands
+- **Implementation**: Customers specify `github:semgrep/semgrep-rules` in scan commands
 
 #### OPA Policies
 - **License**: Apache 2.0 (more permissive)
@@ -148,11 +148,11 @@ Command-line interface supports external rule sources:
 
 ```bash
 # Run semgrep rules directly
-tavoai scan --rules github:returntocorp/semgrep-rules/python/lang/security --target ./code
+tavoai scan --rules github:semgrep/semgrep-rules/python/lang/security --target ./code
 
 # Mix external and TavoAI rules
 tavoai scan \
-  --rules github:returntocorp/semgrep-rules/python \
+  --rules github:semgrep/semgrep-rules/python \
   --rules tavoai:ai-enhanced/owasp-llm-pro \
   --target ./code \
   --ai-enhance
@@ -171,7 +171,7 @@ Content-Type: application/json
   "rules": [
     {
       "source": "github",
-      "repo": "returntocorp/semgrep-rules",
+      "repo": "semgrep/semgrep-rules",
       "path": "python/lang/security",
       "type": "semgrep"
     }
@@ -198,7 +198,7 @@ No need to maintain separate toolchains:
 
 ```bash
 # Single command for comprehensive scanning
-tavoai scan --rules github:returntocorp/semgrep-rules --rules tavoai:all --target ./code
+tavoai scan --rules github:semgrep/semgrep-rules --rules tavoai:all --target ./code
 ```
 
 ### Enhanced Analysis
@@ -309,7 +309,7 @@ execution:
 Enable detailed logging:
 
 ```bash
-tavoai scan --debug --rules github:returntocorp/semgrep-rules/python --target ./code
+tavoai scan --debug --rules github:semgrep/semgrep-rules/python --target ./code
 ```
 
 ## Future Enhancements
