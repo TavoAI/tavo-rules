@@ -299,3 +299,7 @@ To improve the sync script:
 - [AI Risk Database Google Sheet](https://docs.google.com/spreadsheets/d/1zbIPiSIAu6v9MI98HtB4gyM_sI4JsOSuAlVLWAIqw_U/copy)
 - [TavoAI Rule Format Specification](./hybrid-format-spec.md)
 - [MIT AI Risk Research Paper](https://doi.org/10.48550/arXiv.2408.12622)
+- [Semgrep Rules Repository](https://github.com/returntocorp/semgrep-rules)
+- [Open Policy Agent Library](https://github.com/open-policy-agent/library)
+- [YARA Rules Repository](https://github.com/Yara-Rules/rules)
+- [Sigma Rules Repository](https://github.com/SigmaHQ/sigma)
