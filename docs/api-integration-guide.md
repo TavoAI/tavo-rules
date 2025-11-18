@@ -198,7 +198,7 @@ jobs:
   security-scan:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Run OWASP LLM Basic Scan
         uses: tavoai/scan-action@v1

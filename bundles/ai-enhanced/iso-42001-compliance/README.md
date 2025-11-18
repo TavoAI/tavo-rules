@@ -79,7 +79,7 @@ jobs:
   compliance:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: ISO 42001 Compliance Scan
         uses: tavoai/scan-action@v1
         with:
